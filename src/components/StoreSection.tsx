@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { Search, X } from "lucide-react";
 import KeyCard from "./KeyCard";
 
 const keys = [
@@ -58,12 +59,19 @@ const categories = ["All", "Free Keys", "Premium Keys"];
 
 const StoreSection = () => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredKeys = keys.filter((key) => {
-    if (activeCategory === "All") return true;
-    if (activeCategory === "Free Keys") return key.isFree;
-    if (activeCategory === "Premium Keys") return !key.isFree;
-    return true;
+    const matchesCategory = 
+      activeCategory === "All" ? true :
+      activeCategory === "Free Keys" ? key.isFree :
+      activeCategory === "Premium Keys" ? !key.isFree : true;
+    
+    const matchesSearch = 
+      key.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      key.description.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return matchesCategory && matchesSearch;
   });
 
   return (
@@ -93,9 +101,37 @@ const StoreSection = () => {
           </p>
         </motion.div>
 
+        {/* Search bar */}
+        <motion.div
+          className="max-w-md mx-auto mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.15 }}
+        >
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search keys..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-10 py-3 rounded-xl bg-card border border-border/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent/50 focus:shadow-[0_0_20px_hsla(185,100%,50%,0.2)] transition-all duration-300 font-display text-sm"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </motion.div>
+
         {/* Category filters */}
         <motion.div
-          className="flex flex-wrap justify-center gap-3 mb-12"
+          className="flex flex-wrap justify-center gap-3 mb-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -116,12 +152,34 @@ const StoreSection = () => {
           ))}
         </motion.div>
 
+        {/* Results count */}
+        {searchQuery && (
+          <motion.p
+            className="text-center text-sm text-muted-foreground mb-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            Found {filteredKeys.length} key{filteredKeys.length !== 1 ? 's' : ''}
+          </motion.p>
+        )}
+
         {/* Keys grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filteredKeys.map((key, index) => (
             <KeyCard key={key.name} {...key} index={index} />
           ))}
         </div>
+
+        {/* No results message */}
+        {filteredKeys.length === 0 && (
+          <motion.div
+            className="text-center py-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <p className="text-muted-foreground font-display">No keys found matching "{searchQuery}"</p>
+          </motion.div>
+        )}
 
         {/* Info banner */}
         <motion.div

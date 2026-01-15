@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { Search, X } from "lucide-react";
 import RankCard from "./RankCard";
 import proRank from "@/assets/ranks/pro_rank.png";
 import eliteRank from "@/assets/ranks/elite_rank.png";
@@ -71,6 +73,14 @@ const ranks = [
 ];
 
 const RanksSection = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredRanks = ranks.filter((rank) =>
+    rank.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    rank.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    rank.kitName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <section id="ranks" className="relative py-24 overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -80,7 +90,7 @@ const RanksSection = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-12"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -97,11 +107,61 @@ const RanksSection = () => {
           </p>
         </motion.div>
 
+        {/* Search bar */}
+        <motion.div
+          className="max-w-md mx-auto mb-10"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search ranks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-10 py-3 rounded-xl bg-card border border-border/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:shadow-[0_0_20px_hsla(320,100%,50%,0.2)] transition-all duration-300 font-display text-sm"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Results count */}
+        {searchQuery && (
+          <motion.p
+            className="text-center text-sm text-muted-foreground mb-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            Found {filteredRanks.length} rank{filteredRanks.length !== 1 ? 's' : ''}
+          </motion.p>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {ranks.map((rank, index) => (
+          {filteredRanks.map((rank, index) => (
             <RankCard key={rank.name} {...rank} index={index} />
           ))}
         </div>
+
+        {/* No results message */}
+        {filteredRanks.length === 0 && (
+          <motion.div
+            className="text-center py-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <p className="text-muted-foreground font-display">No ranks found matching "{searchQuery}"</p>
+          </motion.div>
+        )}
       </div>
     </section>
   );
