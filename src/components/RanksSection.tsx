@@ -12,16 +12,6 @@ import supremeRank from "@/assets/ranks/supreme_rank.png";
 
 const ranks = [
   {
-    name: "SPICY RANK",
-    description: "The signature starter rank! Get fiery perks and show your SPICYSMP spirit.",
-    kitName: "SPICY Kit",
-    originalPrice: "₹50",
-    salePrice: "₹30",
-    buyLink: "https://spicysmp.dpdns.org/spicy.html",
-    image: spicyRank,
-    tier: "spicy" as const,
-  },
-  {
     name: "PRO RANK",
     description: "Start your journey with the PRO status. Includes essential commands.",
     kitName: "PRO Kit",
@@ -35,7 +25,7 @@ const ranks = [
     name: "ELITE RANK",
     description: "Step up your game. Comes with colored chat and more homes.",
     kitName: "ELITE Kit",
-    originalPrice: "₹65",
+    originalPrice: "₹75",
     salePrice: "₹55",
     buyLink: "https://spicysmp.dpdns.org/elite.html",
     image: eliteRank,
@@ -52,16 +42,6 @@ const ranks = [
     tier: "legend" as const,
   },
   {
-    name: "DEADLIEST RANK",
-    description: "Unleash your true potential! Gain access to special combat perks.",
-    kitName: "DEADLIEST Kit",
-    originalPrice: "₹200",
-    salePrice: "₹150",
-    buyLink: "https://spicysmp.dpdns.org/deadliest.html",
-    image: deadliestRank,
-    tier: "deadliest" as const,
-  },
-  {
     name: "IMMORTAL RANK",
     description: "Unlock the power of eternity. Enjoy flight in lobby and unique titles.",
     kitName: "IMMORTAL Kit",
@@ -72,14 +52,34 @@ const ranks = [
     tier: "immortal" as const,
   },
   {
+    name: "DEADLIEST RANK",
+    description: "Unleash your true potential! Gain access to special combat perks.",
+    kitName: "DEADLIEST Kit",
+    originalPrice: "₹200",
+    salePrice: "₹150",
+    buyLink: "https://spicysmp.dpdns.org/deadliest.html",
+    image: deadliestRank,
+    tier: "deadliest" as const,
+  },
+  {
     name: "SUPREME RANK",
     description: "The ultimate status. Dominate with maximum claim blocks.",
     kitName: "SUPREME Kit",
-    originalPrice: "₹250",
+    originalPrice: "₹280",
     salePrice: "₹200",
     buyLink: "https://spicysmp.dpdns.org/supreme.html",
     image: supremeRank,
     tier: "supreme" as const,
+  },
+  {
+    name: "SPICY RANK",
+    description: "The ultimate signature rank! All fire perks and legendary items.",
+    kitName: "SPICY Kit",
+    originalPrice: "₹350",
+    salePrice: "₹250",
+    buyLink: "https://spicysmp.dpdns.org/spicy.html",
+    image: spicyRank,
+    tier: "spicy" as const,
   },
 ];
 
