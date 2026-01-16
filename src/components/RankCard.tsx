@@ -11,11 +11,17 @@ interface RankCardProps {
   salePrice: string;
   buyLink: string;
   image: string;
-  tier: "pro" | "elite" | "legend" | "deadliest" | "immortal" | "supreme" | "admin";
+  tier: "spicy" | "pro" | "elite" | "legend" | "deadliest" | "immortal" | "supreme" | "admin";
   index: number;
 }
 
 const tierConfig = {
+  spicy: {
+    icon: Flame,
+    gradient: "from-orange-500 to-red-600",
+    glow: "0 0 30px hsla(20, 100%, 50%, 0.5)",
+    accent: "text-orange-400",
+  },
   pro: {
     icon: Star,
     gradient: "from-cyan-500 to-blue-600",

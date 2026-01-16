@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Search, X } from "lucide-react";
 import RankCard from "./RankCard";
+import spicyRank from "@/assets/ranks/spicy_rank.png";
 import proRank from "@/assets/ranks/pro_rank.png";
 import eliteRank from "@/assets/ranks/elite_rank.png";
 import legendRank from "@/assets/ranks/legend_rank.png";
@@ -10,6 +11,16 @@ import immortalRank from "@/assets/ranks/immortal_rank.png";
 import supremeRank from "@/assets/ranks/supreme_rank.png";
 
 const ranks = [
+  {
+    name: "SPICY RANK",
+    description: "The signature starter rank! Get fiery perks and show your SPICYSMP spirit.",
+    kitName: "SPICY Kit",
+    originalPrice: "₹50",
+    salePrice: "₹30",
+    buyLink: "https://spicysmp.dpdns.org/spicy.html",
+    image: spicyRank,
+    tier: "spicy" as const,
+  },
   {
     name: "PRO RANK",
     description: "Start your journey with the PRO status. Includes essential commands.",

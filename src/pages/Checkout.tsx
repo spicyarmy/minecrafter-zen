@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 
 // Rank images
+import spicyRank from "@/assets/ranks/spicy_rank.png";
 import proRank from "@/assets/ranks/pro_rank.png";
 import eliteRank from "@/assets/ranks/elite_rank.png";
 import legendRank from "@/assets/ranks/legend_rank.png";
@@ -46,6 +47,21 @@ type Product = RankProduct | KeyProduct;
 
 const products: Record<string, Product> = {
   // Ranks
+  spicy: {
+    type: "rank",
+    name: "SPICY RANK",
+    description: "The signature starter rank! Get fiery perks and show your SPICYSMP spirit with exclusive fire-themed items.",
+    kitName: "SPICY Kit",
+    image: spicyRank,
+    tier: "spicy",
+    durations: [
+      { days: 30, price: 30 },
+      { days: 60, price: 55 },
+    ],
+    perks: ["Fire Armor Kit", "2 Homes", "/nick Command", "Flame Particles", "Access to /hat", "Spicy Tag"],
+    kitItems: ["Iron Helmet (Fire Protection III)", "Iron Chestplate (Fire Protection III)", "Iron Leggings (Fire Protection III)", "Iron Boots (Fire Protection III)", "Iron Sword (Fire Aspect II)", "16x Golden Apples", "Blaze Rods x8"],
+    qrLink: "https://spicysmp.dpdns.org/spicy.html",
+  },
   pro: {
     type: "rank",
     name: "PRO RANK",
@@ -203,6 +219,13 @@ const products: Record<string, Product> = {
 };
 
 const tierConfig: Record<string, { icon: typeof Star; gradient: string; bgGradient: string; glow: string; accent: string }> = {
+  spicy: {
+    icon: Flame,
+    gradient: "from-orange-500 to-red-600",
+    bgGradient: "from-orange-500/20 to-red-600/20",
+    glow: "0 0 80px hsla(20, 100%, 50%, 0.5)",
+    accent: "text-orange-400",
+  },
   pro: {
     icon: Star,
     gradient: "from-cyan-500 to-blue-600",
