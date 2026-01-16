@@ -13,6 +13,7 @@ import legendRank from "@/assets/ranks/legend_rank.png";
 import deadliestRank from "@/assets/ranks/deadliest_rank.png";
 import immortalRank from "@/assets/ranks/immortal_rank.png";
 import supremeRank from "@/assets/ranks/supreme_rank.png";
+import paymentQR from "@/assets/payment-qr.png";
 
 const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1459835220290441345/25r77rdGny-cj81NCY1ivV5l8C5Z78f9MswpNtg6l9peOEpr-EF55Is7cmTiAAEUfFht";
 
@@ -567,7 +568,7 @@ const Checkout = () => {
                   <div className="flex flex-col items-center">
                     <div className="p-4 bg-white rounded-xl mb-3">
                       <img 
-                        src="https://spicysmp.dpdns.org/qr.png" 
+                        src={paymentQR} 
                         alt="Payment QR Code" 
                         className="w-48 h-48 object-contain"
                       />
