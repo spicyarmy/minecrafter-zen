@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Crown, Star, Flame, Skull, Sparkles, Gem, ShieldCheck, Check, Zap, Shield, Clock, ChevronDown, ExternalLink, Package, Gift, Key } from "lucide-react";
+import { ArrowLeft, Crown, Star, Flame, Skull, Sparkles, Gem, Check, Zap, Shield, Clock, ChevronDown, Package, Gift, Key, Upload, Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 // Rank images
 import proRank from "@/assets/ranks/pro_rank.png";
@@ -11,6 +13,8 @@ import legendRank from "@/assets/ranks/legend_rank.png";
 import deadliestRank from "@/assets/ranks/deadliest_rank.png";
 import immortalRank from "@/assets/ranks/immortal_rank.png";
 import supremeRank from "@/assets/ranks/supreme_rank.png";
+
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1459835220290441345/25r77rdGny-cj81NCY1ivV5l8C5Z78f9MswpNtg6l9peOEpr-EF55Is7cmTiAAEUfFht";
 
 type ProductType = "rank" | "key";
 
@@ -247,12 +251,104 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [selectedDuration, setSelectedDuration] = useState(0);
   const [showKitItems, setShowKitItems] = useState(false);
+  
+  // Form states
+  const [minecraftUsername, setMinecraftUsername] = useState("");
+  const [transferId, setTransferId] = useState("");
+  const [screenshot, setScreenshot] = useState<File | null>(null);
+  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const product = productId ? products[productId] : null;
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setScreenshot(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setScreenshotPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!minecraftUsername.trim()) {
+      toast.error("Please enter your Minecraft username");
+      return;
+    }
+    if (!transferId.trim()) {
+      toast.error("Please enter your Transfer ID");
+      return;
+    }
+    if (!screenshot) {
+      toast.error("Please upload a payment screenshot");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const formData = new FormData();
+      
+      const isRankProduct = product?.type === "rank";
+      const price = isRankProduct 
+        ? (product as RankProduct).durations[selectedDuration].price 
+        : (product as KeyProduct).price;
+      const duration = isRankProduct 
+        ? `${(product as RankProduct).durations[selectedDuration].days} Days` 
+        : "N/A";
+
+      const embedPayload = {
+        embeds: [{
+          title: "🎮 New Purchase Request!",
+          color: 0x00ff00,
+          fields: [
+            { name: "📦 Product", value: product?.name || "Unknown", inline: true },
+            { name: "💰 Price", value: `₹${price}`, inline: true },
+            { name: "⏱️ Duration", value: duration, inline: true },
+            { name: "🎯 Minecraft Username", value: minecraftUsername, inline: true },
+            { name: "🔢 Transfer ID", value: transferId, inline: true },
+          ],
+          timestamp: new Date().toISOString(),
+          footer: { text: "SPICYSMP Store" }
+        }]
+      };
+
+      // First send the embed message
+      await fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(embedPayload),
+      });
+
+      // Then send the screenshot as a file
+      formData.append("file", screenshot, screenshot.name);
+      formData.append("payload_json", JSON.stringify({
+        content: `📸 Payment Screenshot for **${minecraftUsername}** (Transfer ID: ${transferId})`
+      }));
+
+      await fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        body: formData,
+      });
+
+      setIsSubmitted(true);
+      toast.success("Purchase request submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting:", error);
+      toast.error("Failed to submit. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (!product) {
     return (
@@ -467,6 +563,20 @@ const Checkout = () => {
                     </div>
                   )}
 
+                  {/* QR Code Display */}
+                  <div className="flex flex-col items-center">
+                    <div className="p-4 bg-white rounded-xl mb-3">
+                      <img 
+                        src="https://spicysmp.dpdns.org/qr.png" 
+                        alt="Payment QR Code" 
+                        className="w-48 h-48 object-contain"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground text-center">
+                      Scan to pay via UPI
+                    </p>
+                  </div>
+
                   {/* Price display */}
                   <div className="text-center py-4 border-y border-border/50">
                     <p className="text-sm text-muted-foreground mb-1">Total Amount</p>
@@ -480,39 +590,139 @@ const Checkout = () => {
                     </motion.div>
                   </div>
 
-                  {/* Trust badges */}
-                  <div className="flex items-center justify-center gap-6 text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-secondary" />
-                      <span className="text-xs">Instant</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-accent" />
-                      <span className="text-xs">Secure</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-primary" />
-                      <span className="text-xs">24/7</span>
-                    </div>
-                  </div>
+                  {isSubmitted ? (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="text-center py-8"
+                    >
+                      <CheckCircle className="w-16 h-16 text-accent mx-auto mb-4" />
+                      <h3 className="font-display text-xl font-bold text-foreground mb-2">
+                        Request Submitted!
+                      </h3>
+                      <p className="text-muted-foreground text-sm">
+                        Your purchase request has been sent. We'll verify your payment and activate your {isRank ? "rank" : "key"} soon!
+                      </p>
+                      <Button 
+                        variant="ghost" 
+                        className="mt-4"
+                        onClick={() => navigate("/")}
+                      >
+                        Back to Store
+                      </Button>
+                    </motion.div>
+                  ) : (
+                    <>
+                      {/* Form Fields */}
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-display text-muted-foreground mb-2">
+                            Minecraft Username *
+                          </label>
+                          <Input
+                            placeholder="Enter your Minecraft username"
+                            value={minecraftUsername}
+                            onChange={(e) => setMinecraftUsername(e.target.value)}
+                            className="bg-background/50 border-border/50"
+                          />
+                        </div>
 
-                  {/* CTA Button */}
-                  <Button
-                    variant="hero"
-                    size="xl"
-                    className="w-full group"
-                    asChild
-                  >
-                    <a href={product.qrLink} target="_blank" rel="noopener noreferrer">
-                      <span>{(product as KeyProduct).isFree ? "Get Free Key" : "Pay with UPI/QR"}</span>
-                      <ExternalLink className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </a>
-                  </Button>
+                        <div>
+                          <label className="block text-sm font-display text-muted-foreground mb-2">
+                            UPI Transfer ID *
+                          </label>
+                          <Input
+                            placeholder="Enter UPI Transaction ID"
+                            value={transferId}
+                            onChange={(e) => setTransferId(e.target.value)}
+                            className="bg-background/50 border-border/50"
+                          />
+                        </div>
 
-                  {/* Info text */}
-                  <p className="text-xs text-center text-muted-foreground">
-                    By clicking above, you'll be redirected to our secure payment page with QR code.
-                  </p>
+                        <div>
+                          <label className="block text-sm font-display text-muted-foreground mb-2">
+                            Payment Screenshot *
+                          </label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            ref={fileInputRef}
+                            className="hidden"
+                          />
+                          
+                          {screenshotPreview ? (
+                            <div className="relative">
+                              <img 
+                                src={screenshotPreview} 
+                                alt="Screenshot preview" 
+                                className="w-full h-32 object-cover rounded-lg border border-border/50"
+                              />
+                              <button
+                                onClick={() => {
+                                  setScreenshot(null);
+                                  setScreenshotPreview(null);
+                                  if (fileInputRef.current) fileInputRef.current.value = "";
+                                }}
+                                className="absolute top-2 right-2 p-1 bg-destructive/80 rounded-full text-white text-xs"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => fileInputRef.current?.click()}
+                              className="w-full p-6 border-2 border-dashed border-border/50 rounded-xl hover:border-primary/50 transition-colors flex flex-col items-center gap-2"
+                            >
+                              <Upload className="w-8 h-8 text-muted-foreground" />
+                              <span className="text-sm text-muted-foreground">
+                                Click to upload screenshot
+                              </span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Trust badges */}
+                      <div className="flex items-center justify-center gap-6 text-muted-foreground">
+                        <div className="flex items-center gap-2">
+                          <Zap className="w-4 h-4 text-secondary" />
+                          <span className="text-xs">Instant</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Shield className="w-4 h-4 text-accent" />
+                          <span className="text-xs">Secure</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-primary" />
+                          <span className="text-xs">24/7</span>
+                        </div>
+                      </div>
+
+                      {/* Submit Button */}
+                      <Button
+                        variant="hero"
+                        size="xl"
+                        className="w-full group"
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Submitting...
+                          </>
+                        ) : (
+                          <span>{(product as KeyProduct).isFree ? "Get Free Key" : "Submit Purchase"}</span>
+                        )}
+                      </Button>
+
+                      {/* Info text */}
+                      <p className="text-xs text-center text-muted-foreground">
+                        After payment, fill the form above and we'll activate your purchase within 24 hours.
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
             </motion.div>
