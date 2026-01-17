@@ -274,6 +274,7 @@ const Checkout = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
   const [selectedDuration, setSelectedDuration] = useState(0);
+  const [keyQuantity, setKeyQuantity] = useState(1);
   const [showKitItems, setShowKitItems] = useState(false);
   
   // Form states
@@ -323,12 +324,14 @@ const Checkout = () => {
       const formData = new FormData();
       
       const isRankProduct = product?.type === "rank";
-      const price = isRankProduct 
+      const basePrice = isRankProduct 
         ? (product as RankProduct).durations[selectedDuration].price 
         : (product as KeyProduct).price;
+      const price = isRankProduct ? basePrice : basePrice * keyQuantity;
       const duration = isRankProduct 
         ? `${(product as RankProduct).durations[selectedDuration].days} Days` 
         : "N/A";
+      const quantity = isRankProduct ? 1 : keyQuantity;
 
       const embedPayload = {
         embeds: [{
@@ -336,6 +339,7 @@ const Checkout = () => {
           color: 0x00ff00,
           fields: [
             { name: "📦 Product", value: product?.name || "Unknown", inline: true },
+            { name: "🔢 Quantity", value: `${quantity}`, inline: true },
             { name: "💰 Price", value: `₹${price}`, inline: true },
             { name: "⏱️ Duration", value: duration, inline: true },
             { name: "🎯 Minecraft Username", value: minecraftUsername, inline: true },
@@ -396,9 +400,10 @@ const Checkout = () => {
   const glow = config?.glow || (product as KeyProduct).isFree ? "0 0 80px hsla(185, 100%, 50%, 0.3)" : "0 0 80px hsla(45, 100%, 50%, 0.3)";
   const accent = config?.accent || (product as KeyProduct).isFree ? "text-accent" : "text-secondary";
 
-  const currentPrice = isRank 
+  const basePrice = isRank 
     ? (product as RankProduct).durations[selectedDuration].price 
     : (product as KeyProduct).price;
+  const currentPrice = isRank ? basePrice : basePrice * keyQuantity;
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -580,6 +585,33 @@ const Checkout = () => {
                             <div className="font-display font-bold">{duration.days} Days</div>
                             <div className={selectedDuration === index ? "text-white/80" : "text-muted-foreground"}>
                               ₹{duration.price}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Quantity selector (keys only) */}
+                  {!isRank && !(product as KeyProduct).isFree && (
+                    <div>
+                      <label className="block text-sm font-display text-muted-foreground mb-3">
+                        Select Quantity:
+                      </label>
+                      <div className="grid grid-cols-5 gap-2">
+                        {[1, 2, 3, 4, 5].map((qty) => (
+                          <button
+                            key={qty}
+                            onClick={() => setKeyQuantity(qty)}
+                            className={`p-3 rounded-xl border-2 transition-all duration-300 ${
+                              keyQuantity === qty
+                                ? `border-transparent bg-gradient-to-r ${gradient} text-white`
+                                : "border-border/50 bg-card hover:border-primary/50"
+                            }`}
+                          >
+                            <div className="font-display font-bold text-lg">{qty}x</div>
+                            <div className={`text-xs ${keyQuantity === qty ? "text-white/80" : "text-muted-foreground"}`}>
+                              ₹{basePrice * qty}
                             </div>
                           </button>
                         ))}
