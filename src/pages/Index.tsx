@@ -7,10 +7,14 @@ import VideoSection from "@/components/VideoSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import GuidedTour from "@/components/GuidedTour";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Guided Tour for new users */}
+      <GuidedTour />
+      
       {/* Animated particle background */}
       <ParticleBackground />
       
