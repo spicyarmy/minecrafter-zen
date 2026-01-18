@@ -27,6 +27,7 @@ interface RankProduct {
   kitName: string;
   image: string;
   tier: string;
+  isCustomRank?: boolean;
   durations: { days: number; price: number }[];
   perks: string[];
   kitItems: string[];
@@ -152,6 +153,22 @@ const products: Record<string, Product> = {
     kitItems: ["Diamond Pickaxe", "Diamond Shovel", "Diamond Axe", "Diamond Hoe", "Fire Resistance Potion", "Milk Bucket", "Bed", "Red Wool", "Diamond Helmet (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Chestplate (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
     qrLink: "https://spicysmp.dpdns.org/spicy.html",
   },
+  custom: {
+    type: "rank",
+    name: "CUSTOM RANK",
+    description: "Create your own identity! Choose your own rank name with SPICY Kit perks + 2000 Claim Blocks bonus.",
+    kitName: "CUSTOM Kit",
+    image: spicyRank,
+    tier: "custom",
+    isCustomRank: true,
+    durations: [
+      { days: 30, price: 300 },
+      { days: 60, price: 550 },
+    ],
+    perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "Unlimited Home Slots", "Unlimited Auction Slots", "VIP Priority", "2000 Claim Blocks", "Custom Rank Name"],
+    kitItems: ["Diamond Pickaxe", "Diamond Shovel", "Diamond Axe", "Diamond Hoe", "Fire Resistance Potion", "Milk Bucket", "Bed", "Red Wool", "Diamond Helmet (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Chestplate (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
+    qrLink: "https://spicysmp.dpdns.org/custom.html",
+  },
   // Keys - ordered by price (ascending)
   "vote-key": {
     type: "key",
@@ -226,6 +243,13 @@ const tierConfig: Record<string, { icon: typeof Star; gradient: string; bgGradie
     glow: "0 0 80px hsla(20, 100%, 50%, 0.5)",
     accent: "text-orange-400",
   },
+  custom: {
+    icon: Sparkles,
+    gradient: "from-emerald-500 to-teal-600",
+    bgGradient: "from-emerald-500/20 to-teal-600/20",
+    glow: "0 0 80px hsla(160, 100%, 50%, 0.5)",
+    accent: "text-emerald-400",
+  },
   pro: {
     icon: Star,
     gradient: "from-cyan-500 to-blue-600",
@@ -279,6 +303,7 @@ const Checkout = () => {
   
   // Form states
   const [minecraftUsername, setMinecraftUsername] = useState("");
+  const [customRankName, setCustomRankName] = useState("");
   const [transferId, setTransferId] = useState("");
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
@@ -287,6 +312,8 @@ const Checkout = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const product = productId ? products[productId] : null;
+  
+  const isCustomRank = product?.type === "rank" && (product as RankProduct).isCustomRank;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -307,6 +334,10 @@ const Checkout = () => {
   const handleSubmit = async () => {
     if (!minecraftUsername.trim()) {
       toast.error("Please enter your Minecraft username");
+      return;
+    }
+    if (isCustomRank && !customRankName.trim()) {
+      toast.error("Please enter your custom rank name");
       return;
     }
     if (!transferId.trim()) {
@@ -333,18 +364,25 @@ const Checkout = () => {
         : "N/A";
       const quantity = isRankProduct ? 1 : keyQuantity;
 
+      const embedFields = [
+        { name: "📦 Product", value: product?.name || "Unknown", inline: true },
+        { name: "🔢 Quantity", value: `${quantity}`, inline: true },
+        { name: "💰 Price", value: `₹${price}`, inline: true },
+        { name: "⏱️ Duration", value: duration, inline: true },
+        { name: "🎯 Minecraft Username", value: minecraftUsername, inline: true },
+        { name: "🔢 Transfer ID", value: transferId, inline: true },
+      ];
+      
+      // Add custom rank name field if applicable
+      if (isCustomRank && customRankName.trim()) {
+        embedFields.push({ name: "✨ Custom Rank Name", value: customRankName, inline: true });
+      }
+
       const embedPayload = {
         embeds: [{
           title: "🎮 New Purchase Request!",
-          color: 0x00ff00,
-          fields: [
-            { name: "📦 Product", value: product?.name || "Unknown", inline: true },
-            { name: "🔢 Quantity", value: `${quantity}`, inline: true },
-            { name: "💰 Price", value: `₹${price}`, inline: true },
-            { name: "⏱️ Duration", value: duration, inline: true },
-            { name: "🎯 Minecraft Username", value: minecraftUsername, inline: true },
-            { name: "🔢 Transfer ID", value: transferId, inline: true },
-          ],
+          color: isCustomRank ? 0x10b981 : 0x00ff00,
+          fields: embedFields,
           timestamp: new Date().toISOString(),
           footer: { text: "SPICYSMP Store" }
         }]
@@ -748,6 +786,29 @@ const Checkout = () => {
                             className="bg-background/50 border-border/50"
                           />
                         </div>
+
+                        {/* Custom Rank Name Field */}
+                        {isCustomRank && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            className="overflow-hidden"
+                          >
+                            <label className="block text-sm font-display text-muted-foreground mb-2">
+                              Your Custom Rank Name *
+                            </label>
+                            <Input
+                              placeholder="Choose your rank name (e.g., DRAGON, WARRIOR, NINJA)"
+                              value={customRankName}
+                              onChange={(e) => setCustomRankName(e.target.value.toUpperCase())}
+                              className="bg-background/50 border-border/50"
+                              maxLength={15}
+                            />
+                            <p className="text-xs text-muted-foreground mt-1">
+                              This will be displayed as your rank in-game! Max 15 characters.
+                            </p>
+                          </motion.div>
+                        )}
 
                         <div>
                           <label className="block text-sm font-display text-muted-foreground mb-2">

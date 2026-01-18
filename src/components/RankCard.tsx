@@ -11,7 +11,7 @@ interface RankCardProps {
   salePrice: string;
   buyLink: string;
   image: string;
-  tier: "spicy" | "pro" | "elite" | "legend" | "deadliest" | "immortal" | "supreme" | "admin";
+  tier: "spicy" | "pro" | "elite" | "legend" | "deadliest" | "immortal" | "supreme" | "admin" | "custom";
   index: number;
 }
 
@@ -62,6 +62,12 @@ const tierConfig = {
     icon: ShieldCheck,
     gradient: "from-emerald-500 to-teal-600",
     glow: "0 0 30px hsla(160, 100%, 50%, 0.4)",
+    accent: "text-emerald-400",
+  },
+  custom: {
+    icon: Sparkles,
+    gradient: "from-emerald-500 to-teal-600",
+    glow: "0 0 30px hsla(160, 100%, 50%, 0.5)",
     accent: "text-emerald-400",
   },
 };

@@ -81,6 +81,16 @@ const ranks = [
     image: spicyRank,
     tier: "spicy" as const,
   },
+  {
+    name: "CUSTOM RANK",
+    description: "Create your own identity! Choose your own rank name with SPICY Kit perks + 2000 Claim Blocks.",
+    kitName: "CUSTOM Kit",
+    originalPrice: "₹350",
+    salePrice: "₹300",
+    buyLink: "https://spicysmp.dpdns.org/custom.html",
+    image: spicyRank,
+    tier: "custom" as const,
+  },
 ];
 
 const RanksSection = () => {
