@@ -400,10 +400,17 @@ const Checkout = () => {
   const glow = config?.glow || (product as KeyProduct).isFree ? "0 0 80px hsla(185, 100%, 50%, 0.3)" : "0 0 80px hsla(45, 100%, 50%, 0.3)";
   const accent = config?.accent || (product as KeyProduct).isFree ? "text-accent" : "text-secondary";
 
+  // Discount configuration - 10% off until Jan 20, 2026
+  const discountEndDate = new Date('2026-01-20T23:59:59');
+  const isDiscountActive = new Date() <= discountEndDate;
+  const discountPercent = 10;
+
   const basePrice = isRank 
     ? (product as RankProduct).durations[selectedDuration].price 
     : (product as KeyProduct).price;
-  const currentPrice = isRank ? basePrice : basePrice * keyQuantity;
+  const originalPrice = isRank ? basePrice : basePrice * keyQuantity;
+  const discountedPrice = isDiscountActive ? Math.round(originalPrice * (1 - discountPercent / 100)) : originalPrice;
+  const currentPrice = discountedPrice;
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -558,6 +565,21 @@ const Checkout = () => {
                 className="sticky top-24 rounded-2xl bg-card border border-border/50 overflow-hidden"
                 style={{ boxShadow: glow }}
               >
+                {/* Discount Banner */}
+                {isDiscountActive && !(product as KeyProduct).isFree && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-gradient-to-r from-red-500 to-orange-500 px-4 py-2 flex items-center justify-center gap-2"
+                  >
+                    <Sparkles className="w-4 h-4 text-white" />
+                    <span className="text-white font-display text-sm font-bold">
+                      🎉 10% OFF - Valid till 20 January!
+                    </span>
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </motion.div>
+                )}
+
                 {/* Card header */}
                 <div className={`p-6 bg-gradient-to-r ${gradient}`}>
                   <h2 className="font-display text-xl font-bold text-white mb-1">Complete Purchase</h2>
@@ -584,7 +606,14 @@ const Checkout = () => {
                           >
                             <div className="font-display font-bold">{duration.days} Days</div>
                             <div className={selectedDuration === index ? "text-white/80" : "text-muted-foreground"}>
-                              ₹{duration.price}
+                              {isDiscountActive ? (
+                                <span>
+                                  <span className="line-through text-xs mr-1">₹{duration.price}</span>
+                                  <span className="text-green-400">₹{Math.round(duration.price * 0.9)}</span>
+                                </span>
+                              ) : (
+                                `₹${duration.price}`
+                              )}
                             </div>
                           </button>
                         ))}
@@ -611,7 +640,14 @@ const Checkout = () => {
                           >
                             <div className="font-display font-bold text-lg">{qty}x</div>
                             <div className={`text-xs ${keyQuantity === qty ? "text-white/80" : "text-muted-foreground"}`}>
-                              ₹{basePrice * qty}
+                              {isDiscountActive ? (
+                                <span>
+                                  <span className="line-through mr-1">₹{basePrice * qty}</span>
+                                  <span className="text-green-400">₹{Math.round(basePrice * qty * 0.9)}</span>
+                                </span>
+                              ) : (
+                                `₹${basePrice * qty}`
+                              )}
                             </div>
                           </button>
                         ))}
@@ -636,14 +672,44 @@ const Checkout = () => {
                   {/* Price display */}
                   <div className="text-center py-4 border-y border-border/50">
                     <p className="text-sm text-muted-foreground mb-1">Total Amount</p>
-                    <motion.div
-                      key={currentPrice}
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      className={`font-display text-4xl font-black bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}
-                    >
-                      {(product as KeyProduct).isFree ? "FREE" : `₹${currentPrice}`}
-                    </motion.div>
+                    {(product as KeyProduct).isFree ? (
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className={`font-display text-4xl font-black bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}
+                      >
+                        FREE
+                      </motion.div>
+                    ) : (
+                      <div className="space-y-1">
+                        {isDiscountActive && (
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="text-muted-foreground line-through text-lg"
+                          >
+                            ₹{originalPrice}
+                          </motion.div>
+                        )}
+                        <motion.div
+                          key={currentPrice}
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          className={`font-display text-4xl font-black bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}
+                        >
+                          ₹{currentPrice}
+                        </motion.div>
+                        {isDiscountActive && (
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="inline-block px-2 py-1 bg-red-500/20 text-red-400 text-xs font-display font-bold rounded"
+                          >
+                            You save ₹{originalPrice - currentPrice}!
+                          </motion.div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {isSubmitted ? (
