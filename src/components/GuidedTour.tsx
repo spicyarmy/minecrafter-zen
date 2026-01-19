@@ -100,10 +100,10 @@ const GuidedTour = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 1, type: "spring" }}
           onClick={handleStartTour}
-          className="fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+          className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
           title="Website Guide"
         >
-          <HelpCircle className="w-6 h-6 text-white" />
+          <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
         </motion.button>
       )}
 
@@ -126,7 +126,7 @@ const GuidedTour = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: "spring", damping: 25 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90%] max-w-md"
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[92%] max-w-md mx-auto px-2 sm:px-0"
             >
               <div className="relative bg-card border border-border rounded-2xl overflow-hidden shadow-2xl">
                 {/* Gradient top */}
@@ -141,16 +141,18 @@ const GuidedTour = () => {
                 </button>
 
                 {/* Content */}
-                <div className="p-6 pt-8">
+                <div className="p-4 pt-6 sm:p-6 sm:pt-8">
                   {/* Icon */}
                   <motion.div
                     key={currentStep}
                     initial={{ scale: 0, rotate: -180 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ type: "spring", damping: 15 }}
-                    className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center text-primary"
+                    className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center text-primary"
                   >
-                    {step.icon}
+                    <span className="[&>svg]:w-6 [&>svg]:h-6 sm:[&>svg]:w-8 sm:[&>svg]:h-8">
+                      {step.icon}
+                    </span>
                   </motion.div>
 
                   {/* Title */}
@@ -158,7 +160,7 @@ const GuidedTour = () => {
                     key={`title-${currentStep}`}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="font-display text-xl font-bold text-center text-foreground mb-3"
+                    className="font-display text-lg sm:text-xl font-bold text-center text-foreground mb-2 sm:mb-3"
                   >
                     {step.title}
                   </motion.h3>
@@ -169,48 +171,48 @@ const GuidedTour = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="text-muted-foreground text-center text-sm leading-relaxed mb-6"
+                    className="text-muted-foreground text-center text-xs sm:text-sm leading-relaxed mb-4 sm:mb-6"
                   >
                     {step.description}
                   </motion.p>
 
                   {/* Progress dots */}
-                  <div className="flex justify-center gap-2 mb-6">
+                  <div className="flex justify-center gap-1.5 sm:gap-2 mb-4 sm:mb-6">
                     {tourSteps.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => setCurrentStep(index)}
-                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
                           index === currentStep
-                            ? "w-6 bg-gradient-to-r from-primary to-secondary"
+                            ? "w-4 sm:w-6 bg-gradient-to-r from-primary to-secondary"
                             : index < currentStep
-                            ? "bg-primary/50"
-                            : "bg-muted"
+                            ? "w-1.5 sm:w-2 bg-primary/50"
+                            : "w-1.5 sm:w-2 bg-muted"
                         }`}
                       />
                     ))}
                   </div>
 
                   {/* Navigation buttons */}
-                  <div className="flex gap-3">
+                  <div className="flex gap-2 sm:gap-3">
                     {currentStep > 0 && (
                       <Button
                         variant="outline"
                         onClick={handlePrev}
-                        className="flex-1 gap-2"
+                        className="flex-1 gap-1 sm:gap-2 text-xs sm:text-sm h-9 sm:h-10"
                       >
-                        <ChevronLeft className="w-4 h-4" />
+                        <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4" />
                         Back
                       </Button>
                     )}
                     <Button
                       onClick={handleNext}
-                      className="flex-1 gap-2 bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                      className="flex-1 gap-1 sm:gap-2 bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-xs sm:text-sm h-9 sm:h-10"
                     >
                       {currentStep < tourSteps.length - 1 ? (
                         <>
                           Next
-                          <ChevronRight className="w-4 h-4" />
+                          <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
                         </>
                       ) : (
                         <>
@@ -224,7 +226,7 @@ const GuidedTour = () => {
                   {currentStep < tourSteps.length - 1 && (
                     <button
                       onClick={handleClose}
-                      className="w-full text-center text-xs text-muted-foreground mt-4 hover:text-foreground transition-colors"
+                      className="w-full text-center text-[10px] sm:text-xs text-muted-foreground mt-3 sm:mt-4 hover:text-foreground transition-colors"
                     >
                       Skip tutorial
                     </button>
