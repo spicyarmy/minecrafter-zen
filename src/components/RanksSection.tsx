@@ -9,6 +9,7 @@ import legendRank from "@/assets/ranks/legend_rank.png";
 import deadliestRank from "@/assets/ranks/deadliest_rank.png";
 import immortalRank from "@/assets/ranks/immortal_rank.png";
 import supremeRank from "@/assets/ranks/supreme_rank.png";
+import customRank from "@/assets/ranks/custom_rank.png";
 
 const ranks = [
   {
@@ -88,7 +89,7 @@ const ranks = [
     originalPrice: "₹350",
     salePrice: "₹300",
     buyLink: "https://spicysmp.dpdns.org/custom.html",
-    image: spicyRank,
+    image: customRank,
     tier: "custom" as const,
   },
 ];
