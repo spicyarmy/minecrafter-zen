@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Crown, Star, Flame, Skull, Sparkles, Gem, Check, Zap, Shield, Clock, ChevronDown, Package, Gift, Key, Upload, Loader2, CheckCircle, Coins, MapPin } from "lucide-react";
+import { ArrowLeft, Crown, Star, Flame, Skull, Sparkles, Gem, Check, Zap, Shield, Clock, ChevronDown, Package, Gift, Key, Upload, Loader2, CheckCircle, Coins, MapPin, Tag, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 // Rank images
 import spicyRank from "@/assets/ranks/spicy_rank.png";
@@ -340,6 +341,12 @@ const Checkout = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Coupon states
+  const [couponCode, setCouponCode] = useState("");
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount_percent: number } | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
 
   const product = productId ? products[productId] : null;
   
@@ -366,6 +373,63 @@ const Checkout = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      setCouponError("Please enter a coupon code");
+      return;
+    }
+
+    setIsApplyingCoupon(true);
+    setCouponError(null);
+
+    try {
+      const { data, error } = await supabase
+        .from("coupons")
+        .select("code, discount_percent, expires_at, usage_limit, used_count")
+        .eq("code", couponCode.toUpperCase().trim())
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Coupon error:", error);
+        setCouponError("Failed to validate coupon. Please try again.");
+        return;
+      }
+
+      if (!data) {
+        setCouponError("Invalid coupon code");
+        return;
+      }
+
+      // Check if coupon is expired
+      if (data.expires_at && new Date(data.expires_at) < new Date()) {
+        setCouponError("This coupon has expired");
+        return;
+      }
+
+      // Check usage limit
+      if (data.usage_limit && data.used_count >= data.usage_limit) {
+        setCouponError("This coupon has reached its usage limit");
+        return;
+      }
+
+      setAppliedCoupon({ code: data.code, discount_percent: data.discount_percent });
+      setCouponCode("");
+      toast.success(`Coupon applied! ${data.discount_percent}% OFF`);
+    } catch (err) {
+      console.error("Coupon error:", err);
+      setCouponError("Something went wrong. Please try again.");
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponError(null);
+    toast.info("Coupon removed");
   };
 
   const handleSubmit = async () => {
@@ -410,19 +474,34 @@ const Checkout = () => {
         quantity = `${currencyQuantity} ${(product as CurrencyProduct).unit}`;
       }
       
-      // Apply discount if active
+      // Apply site discount if active
       if (isDiscountActive) {
         price = Math.round(price * 0.9);
+      }
+      
+      // Apply coupon discount if present
+      if (appliedCoupon) {
+        price = Math.round(price * (1 - appliedCoupon.discount_percent / 100));
       }
 
       const embedFields = [
         { name: "📦 Product", value: product?.name || "Unknown", inline: true },
         { name: "🔢 Quantity", value: `${quantity}`, inline: true },
-        { name: "💰 Price", value: `₹${price}`, inline: true },
+        { name: "💰 Final Price", value: `₹${price}`, inline: true },
         { name: "⏱️ Duration", value: duration, inline: true },
         { name: "🎯 Minecraft Username", value: minecraftUsername, inline: true },
         { name: "🔢 Transfer ID", value: transferId, inline: true },
       ];
+      
+      // Add discount info
+      if (isDiscountActive) {
+        embedFields.push({ name: "🎉 Site Discount", value: "10% OFF", inline: true });
+      }
+      
+      // Add coupon info if applied
+      if (appliedCoupon) {
+        embedFields.push({ name: "🎟️ Coupon Applied", value: `${appliedCoupon.code} (${appliedCoupon.discount_percent}% OFF)`, inline: true });
+      }
       
       // Add custom rank name field if applicable
       if (isCustomRank && customRankName.trim()) {
@@ -509,7 +588,7 @@ const Checkout = () => {
   // Discount configuration - 10% off until Jan 20, 2026
   const discountEndDate = new Date('2026-01-20T23:59:59');
   const isDiscountActive = new Date() <= discountEndDate;
-  const discountPercent = 10;
+  const siteDiscountPercent = 10;
 
   // Calculate prices based on product type
   let originalPrice = 0;
@@ -521,8 +600,13 @@ const Checkout = () => {
     originalPrice = currencyQuantity * (product as CurrencyProduct).ratePerUnit;
   }
   
-  const discountedPrice = isDiscountActive ? Math.round(originalPrice * (1 - discountPercent / 100)) : originalPrice;
-  const currentPrice = discountedPrice;
+  // Apply site-wide discount first
+  const afterSiteDiscount = isDiscountActive ? Math.round(originalPrice * (1 - siteDiscountPercent / 100)) : originalPrice;
+  
+  // Then apply coupon discount on top
+  const couponDiscountAmount = appliedCoupon ? Math.round(afterSiteDiscount * (appliedCoupon.discount_percent / 100)) : 0;
+  const currentPrice = afterSiteDiscount - couponDiscountAmount;
+  const totalSavings = originalPrice - currentPrice;
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -862,6 +946,71 @@ const Checkout = () => {
                     </div>
                   )}
 
+                  {/* Coupon Code Input */}
+                  {!(isKey && (product as KeyProduct).isFree) && (
+                    <div className="space-y-3">
+                      <label className="block text-sm font-display text-muted-foreground">
+                        <Tag className="w-4 h-4 inline mr-1" />
+                        Have a Coupon Code?
+                      </label>
+                      
+                      {appliedCoupon ? (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="flex items-center justify-between p-3 rounded-lg bg-accent/10 border border-accent/30"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Check className="w-4 h-4 text-accent" />
+                            <span className="font-display font-bold text-accent">{appliedCoupon.code}</span>
+                            <span className="text-xs text-muted-foreground">({appliedCoupon.discount_percent}% OFF)</span>
+                          </div>
+                          <button
+                            onClick={removeCoupon}
+                            className="p-1 hover:bg-destructive/20 rounded text-muted-foreground hover:text-destructive transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </motion.div>
+                      ) : (
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="Enter coupon code"
+                            value={couponCode}
+                            onChange={(e) => {
+                              setCouponCode(e.target.value.toUpperCase());
+                              setCouponError(null);
+                            }}
+                            onKeyDown={(e) => e.key === "Enter" && handleApplyCoupon()}
+                            className="bg-background/50 border-border/50 uppercase"
+                          />
+                          <Button
+                            variant="outline"
+                            onClick={handleApplyCoupon}
+                            disabled={isApplyingCoupon}
+                            className="shrink-0"
+                          >
+                            {isApplyingCoupon ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              "Apply"
+                            )}
+                          </Button>
+                        </div>
+                      )}
+                      
+                      {couponError && (
+                        <motion.p
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="text-xs text-destructive"
+                        >
+                          {couponError}
+                        </motion.p>
+                      )}
+                    </div>
+                  )}
+
                   {/* QR Code Display */}
                   <div className="flex flex-col items-center">
                     <div className="p-4 bg-white rounded-xl mb-3">
@@ -889,7 +1038,7 @@ const Checkout = () => {
                       </motion.div>
                     ) : (
                       <div className="space-y-1">
-                        {isDiscountActive && (
+                        {(isDiscountActive || appliedCoupon) && (
                           <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -906,13 +1055,36 @@ const Checkout = () => {
                         >
                           ₹{currentPrice}
                         </motion.div>
-                        {isDiscountActive && (
+                        
+                        {/* Discount breakdown */}
+                        <div className="space-y-1 mt-2">
+                          {isDiscountActive && (
+                            <motion.div
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              className="inline-block px-2 py-1 bg-primary/20 text-primary text-xs font-display font-bold rounded mr-1"
+                            >
+                              🎉 10% Site Discount
+                            </motion.div>
+                          )}
+                          {appliedCoupon && (
+                            <motion.div
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              className="inline-block px-2 py-1 bg-accent/20 text-accent text-xs font-display font-bold rounded"
+                            >
+                              🎟️ {appliedCoupon.code}: {appliedCoupon.discount_percent}% OFF
+                            </motion.div>
+                          )}
+                        </div>
+                        
+                        {totalSavings > 0 && (
                           <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="inline-block px-2 py-1 bg-red-500/20 text-red-400 text-xs font-display font-bold rounded"
+                            className="inline-block px-2 py-1 bg-destructive/20 text-destructive text-xs font-display font-bold rounded mt-2"
                           >
-                            You save ₹{originalPrice - currentPrice}!
+                            You save ₹{totalSavings}!
                           </motion.div>
                         )}
                         {isCurrency && (
