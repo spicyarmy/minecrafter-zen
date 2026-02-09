@@ -16,8 +16,13 @@ import deadliestRank from "@/assets/ranks/deadliest_rank.png";
 import immortalRank from "@/assets/ranks/immortal_rank.png";
 import supremeRank from "@/assets/ranks/supreme_rank.png";
 import paymentQR from "@/assets/payment-qr.png";
+import tokenVipImg from "@/assets/ranks/token_vip.png";
+import tokenLegendImg from "@/assets/ranks/token_legend.png";
+import tokenDeadliestImg from "@/assets/ranks/token_deadliest.png";
+import tokenRazerImg from "@/assets/ranks/token_razer.png";
 
 const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1459835220290441345/25r77rdGny-cj81NCY1ivV5l8C5Z78f9MswpNtg6l9peOEpr-EF55Is7cmTiAAEUfFht";
+const TOKEN_DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1470037251261075489/O4B_2_k748esf2c15reTOgJoRY33-c-zwpBLMvUQFdLMCA8nFItjlF4otTolERDi_DBS";
 
 type ProductType = "rank" | "key" | "currency";
 
@@ -297,7 +302,7 @@ const products: Record<string, Product> = {
     name: "VIP RANK",
     description: "Start your journey with VIP status on Token SMP. Includes Protection IV Armor and tools.",
     kitName: "VIP Kit",
-    image: proRank,
+    image: tokenVipImg,
     tier: "token-vip",
     durations: [
       { days: 30, price: 50 },
@@ -311,7 +316,7 @@ const products: Record<string, Product> = {
     name: "LEGEND RANK",
     description: "Rise above the rest on Token SMP. Includes Protection V Armor and tools.",
     kitName: "LEGEND Kit",
-    image: legendRank,
+    image: tokenLegendImg,
     tier: "token-legend",
     durations: [
       { days: 30, price: 100 },
@@ -325,7 +330,7 @@ const products: Record<string, Product> = {
     name: "DEADLIEST RANK",
     description: "Unleash destruction on Token SMP. Includes Protection VI Armor and tools.",
     kitName: "DEADLIEST Kit",
-    image: deadliestRank,
+    image: tokenDeadliestImg,
     tier: "token-deadliest",
     durations: [
       { days: 30, price: 150 },
@@ -339,7 +344,7 @@ const products: Record<string, Product> = {
     name: "RAZER RANK",
     description: "Ultimate power on Token SMP. Includes Protection VIII Armor and tools.",
     kitName: "RAZER Kit",
-    image: supremeRank,
+    image: tokenRazerImg,
     tier: "token-razer",
     durations: [
       { days: 30, price: 200 },
@@ -630,18 +635,20 @@ const Checkout = () => {
         embedFields.push({ name: "✨ Custom Rank Name", value: customRankName, inline: true });
       }
 
+      const webhookUrl = isTokenRank ? TOKEN_DISCORD_WEBHOOK_URL : DISCORD_WEBHOOK_URL;
+
       const embedPayload = {
         embeds: [{
-          title: "🎮 New Purchase Request!",
-          color: isCustomRank ? 0x10b981 : 0x00ff00,
+          title: isTokenRank ? "🎮 New Token SMP Purchase!" : "🎮 New Purchase Request!",
+          color: isCustomRank ? 0x10b981 : (isTokenRank ? 0xf59e0b : 0x00ff00),
           fields: embedFields,
           timestamp: new Date().toISOString(),
-          footer: { text: "SPICY NETWORK Store" }
+          footer: { text: isTokenRank ? "TOKEN SMP Store" : "SPICY NETWORK Store" }
         }]
       };
 
       // First send the embed message
-      await fetch(DISCORD_WEBHOOK_URL, {
+      await fetch(webhookUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(embedPayload),
@@ -653,7 +660,7 @@ const Checkout = () => {
         content: `📸 Payment Screenshot for **${minecraftUsername}** (Transfer ID: ${transferId})`
       }));
 
-      await fetch(DISCORD_WEBHOOK_URL, {
+      await fetch(webhookUrl, {
         method: "POST",
         body: formData,
       });

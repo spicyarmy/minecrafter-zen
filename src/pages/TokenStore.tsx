@@ -4,6 +4,10 @@ import { ArrowLeft, Crown, Star, Skull, Zap, Shield, Headphones } from "lucide-r
 import { Button } from "@/components/ui/button";
 import ParticleBackground from "@/components/ParticleBackground";
 import tokenLogo from "@/assets/token-logo.png";
+import tokenVipImg from "@/assets/ranks/token_vip.png";
+import tokenLegendImg from "@/assets/ranks/token_legend.png";
+import tokenDeadliestImg from "@/assets/ranks/token_deadliest.png";
+import tokenRazerImg from "@/assets/ranks/token_razer.png";
 
 const tokenRanks = [
   {
@@ -16,6 +20,7 @@ const tokenRanks = [
     glow: "0 0 40px hsla(185, 100%, 50%, 0.3)",
     accent: "text-cyan-400",
     icon: Star,
+    image: tokenVipImg,
   },
   {
     id: "token-legend",
@@ -27,6 +32,7 @@ const tokenRanks = [
     glow: "0 0 40px hsla(45, 100%, 50%, 0.3)",
     accent: "text-amber-400",
     icon: Crown,
+    image: tokenLegendImg,
   },
   {
     id: "token-deadliest",
@@ -38,6 +44,7 @@ const tokenRanks = [
     glow: "0 0 40px hsla(0, 100%, 50%, 0.3)",
     accent: "text-red-400",
     icon: Skull,
+    image: tokenDeadliestImg,
   },
   {
     id: "token-razer",
@@ -49,6 +56,7 @@ const tokenRanks = [
     glow: "0 0 40px hsla(140, 100%, 50%, 0.3)",
     accent: "text-green-400",
     icon: Zap,
+    image: tokenRazerImg,
   },
 ];
 
@@ -182,6 +190,11 @@ const TokenStore = () => {
                     <div className={`h-2 bg-gradient-to-r ${rank.gradient}`} />
 
                     <div className="p-6">
+                      {/* Rank Image */}
+                      <div className="w-full h-32 mb-4 rounded-xl overflow-hidden">
+                        <img src={rank.image} alt={rank.name} className="w-full h-full object-cover" />
+                      </div>
+
                       {/* Icon */}
                       <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${rank.gradient} flex items-center justify-center mb-4 shadow-lg`}>
                         <Icon className="w-7 h-7 text-white" />
