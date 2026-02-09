@@ -388,7 +388,7 @@ const Checkout = () => {
   const lifestealKeyIds = ["core-key", "flux-key", "aura-key"];
   const isSurvivalOnly = (isRank && ((product as RankProduct).tier === "spicy" || (product as RankProduct).tier === "custom"));
   const isLifestealOnly = productId ? lifestealKeyIds.includes(productId) : false;
-  const showServerSelector = !isSurvivalOnly && !isLifestealOnly && !isCurrency;
+  const showServerSelector = !isSurvivalOnly && !isLifestealOnly && !isCurrency && !isKey;
 
   useEffect(() => {
     window.scrollTo(0, 0);
