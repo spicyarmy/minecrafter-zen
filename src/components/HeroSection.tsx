@@ -60,7 +60,7 @@ const HeroSection = () => {
             </motion.span>
             
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-black mb-6 leading-tight">
-              <span className="gradient-text-hero text-glow-primary">SPICYSMP</span>
+              <span className="gradient-text-hero text-glow-primary">SPICY SMP</span>
             </h1>
             
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">

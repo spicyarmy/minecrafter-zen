@@ -27,7 +27,7 @@ const Footer = () => {
                 <span className="text-2xl">🔥</span>
               </div>
               <span className="font-display text-2xl font-bold gradient-text">
-                SPICYSMP
+                SPICY SMP
               </span>
             </div>
             <p className="text-muted-foreground max-w-md">
@@ -65,7 +65,7 @@ const Footer = () => {
             transition={{ delay: 0.2 }}
             className="text-sm text-muted-foreground"
           >
-            <p>© {new Date().getFullYear()} SPICYSMP. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} SPICY NETWORK. All rights reserved.</p>
             <p className="mt-1 text-xs">
               Not affiliated with Mojang or Microsoft.
             </p>

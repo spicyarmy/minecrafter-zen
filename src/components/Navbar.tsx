@@ -45,7 +45,7 @@ const Navbar = () => {
             <span className="text-xl font-bold text-primary-foreground">🔥</span>
           </div>
           <span className="font-display text-xl font-bold gradient-text">
-            SPICYSMP
+            SPICY SMP
           </span>
         </motion.a>
 
