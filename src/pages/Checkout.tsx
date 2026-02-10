@@ -1183,7 +1183,7 @@ const Checkout = () => {
                   <div className="flex flex-col items-center">
                     <div className="p-4 bg-white rounded-xl mb-3">
                       <img 
-                        src={isTokenRank ? tokenPaymentQR : paymentQR} 
+                        src={paymentQR} 
                         alt="Payment QR Code" 
                         className="w-48 h-48 object-contain"
                       />
