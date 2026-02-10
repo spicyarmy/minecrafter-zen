@@ -16,6 +16,7 @@ import deadliestRank from "@/assets/ranks/deadliest_rank.png";
 import immortalRank from "@/assets/ranks/immortal_rank.png";
 import supremeRank from "@/assets/ranks/supreme_rank.png";
 import paymentQR from "@/assets/payment-qr.png";
+import tokenPaymentQR from "@/assets/token-payment-qr.jpg";
 import tokenVipImg from "@/assets/ranks/token_vip.png";
 import tokenLegendImg from "@/assets/ranks/token_legend.png";
 import tokenDeadliestImg from "@/assets/ranks/token_deadliest.png";
@@ -1182,7 +1183,7 @@ const Checkout = () => {
                   <div className="flex flex-col items-center">
                     <div className="p-4 bg-white rounded-xl mb-3">
                       <img 
-                        src={paymentQR} 
+                        src={isTokenRank ? tokenPaymentQR : paymentQR} 
                         alt="Payment QR Code" 
                         className="w-48 h-48 object-contain"
                       />
