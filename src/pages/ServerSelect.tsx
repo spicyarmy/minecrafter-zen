@@ -104,7 +104,7 @@ const ServerSelect = () => {
                 TOKEN SMP
               </h2>
               <p className="text-muted-foreground mb-6">
-                VIP, LEGEND, DEADLIEST & RAZER Ranks
+                Ranks, Coins, Claim Blocks & more
               </p>
 
               <div className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-yellow-500 to-amber-600 font-display font-bold text-white transition-all group-hover:shadow-[0_0_30px_hsla(45,100%,50%,0.5)]">

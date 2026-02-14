@@ -16,14 +16,9 @@ import deadliestRank from "@/assets/ranks/deadliest_rank.png";
 import immortalRank from "@/assets/ranks/immortal_rank.png";
 import supremeRank from "@/assets/ranks/supreme_rank.png";
 import paymentQR from "@/assets/payment-qr.png";
-import tokenPaymentQR from "@/assets/token-payment-qr.jpg";
-import tokenVipImg from "@/assets/ranks/token_vip.png";
-import tokenLegendImg from "@/assets/ranks/token_legend.png";
-import tokenDeadliestImg from "@/assets/ranks/token_deadliest.png";
-import tokenRazerImg from "@/assets/ranks/token_razer.png";
 
 const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1459835220290441345/25r77rdGny-cj81NCY1ivV5l8C5Z78f9MswpNtg6l9peOEpr-EF55Is7cmTiAAEUfFht";
-const TOKEN_DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1470037251261075489/O4B_2_k748esf2c15reTOgJoRY33-c-zwpBLMvUQFdLMCA8nFItjlF4otTolERDi_DBS";
+
 
 type ProductType = "rank" | "key" | "currency";
 
@@ -297,63 +292,6 @@ const products: Record<string, Product> = {
     minQuantity: 100,
     qrLink: "https://spicysmp.dpdns.org/claimblocks.html",
   },
-  // Token SMP Ranks
-  "token-vip": {
-    type: "rank",
-    name: "VIP RANK",
-    description: "Start your journey with VIP status on Token SMP. Includes Protection IV Armor and tools.",
-    kitName: "VIP Kit",
-    image: tokenVipImg,
-    tier: "token-vip",
-    durations: [
-      { days: 30, price: 50 },
-    ],
-    perks: ["/Kit", "VIP Tag", "Protection IV Gear"],
-    kitItems: ["Protection IV Armor Set", "Diamond Tools"],
-    qrLink: "https://spicysmp.dpdns.org/token_vip.html",
-  },
-  "token-legend": {
-    type: "rank",
-    name: "LEGEND RANK",
-    description: "Rise above the rest on Token SMP. Includes Protection V Armor and tools.",
-    kitName: "LEGEND Kit",
-    image: tokenLegendImg,
-    tier: "token-legend",
-    durations: [
-      { days: 30, price: 100 },
-    ],
-    perks: ["/Kit", "LEGEND Tag", "Protection V Gear"],
-    kitItems: ["Protection V Armor Set", "Diamond Tools"],
-    qrLink: "https://spicysmp.dpdns.org/token_legend.html",
-  },
-  "token-deadliest": {
-    type: "rank",
-    name: "DEADLIEST RANK",
-    description: "Unleash destruction on Token SMP. Includes Protection VI Armor and tools.",
-    kitName: "DEADLIEST Kit",
-    image: tokenDeadliestImg,
-    tier: "token-deadliest",
-    durations: [
-      { days: 30, price: 150 },
-    ],
-    perks: ["/Kit", "DEADLIEST Tag", "Protection VI Gear"],
-    kitItems: ["Protection VI Armor Set", "Diamond Tools"],
-    qrLink: "https://spicysmp.dpdns.org/token_deadliest.html",
-  },
-  "token-razer": {
-    type: "rank",
-    name: "RAZER RANK",
-    description: "Ultimate power on Token SMP. Includes Protection VIII Armor and tools.",
-    kitName: "RAZER Kit",
-    image: tokenRazerImg,
-    tier: "token-razer",
-    durations: [
-      { days: 30, price: 200 },
-    ],
-    perks: ["/Kit", "RAZER Tag", "Protection VIII Gear"],
-    kitItems: ["Protection VIII Armor Set", "Diamond Tools"],
-    qrLink: "https://spicysmp.dpdns.org/token_razer.html",
-  },
 };
 
 const tierConfig: Record<string, { icon: typeof Star; gradient: string; bgGradient: string; glow: string; accent: string }> = {
@@ -413,34 +351,6 @@ const tierConfig: Record<string, { icon: typeof Star; gradient: string; bgGradie
     glow: "0 0 80px hsla(280, 100%, 50%, 0.4)",
     accent: "text-purple-400",
   },
-  "token-vip": {
-    icon: Star,
-    gradient: "from-cyan-500 to-blue-600",
-    bgGradient: "from-cyan-500/20 to-blue-600/20",
-    glow: "0 0 80px hsla(185, 100%, 50%, 0.4)",
-    accent: "text-cyan-400",
-  },
-  "token-legend": {
-    icon: Crown,
-    gradient: "from-amber-500 to-orange-600",
-    bgGradient: "from-amber-500/20 to-orange-600/20",
-    glow: "0 0 80px hsla(45, 100%, 50%, 0.4)",
-    accent: "text-amber-400",
-  },
-  "token-deadliest": {
-    icon: Skull,
-    gradient: "from-red-500 to-rose-600",
-    bgGradient: "from-red-500/20 to-rose-600/20",
-    glow: "0 0 80px hsla(0, 100%, 50%, 0.4)",
-    accent: "text-red-400",
-  },
-  "token-razer": {
-    icon: Zap,
-    gradient: "from-green-500 to-emerald-600",
-    bgGradient: "from-green-500/20 to-emerald-600/20",
-    glow: "0 0 80px hsla(140, 100%, 50%, 0.4)",
-    accent: "text-green-400",
-  },
 };
 
 const Checkout = () => {
@@ -477,10 +387,9 @@ const Checkout = () => {
   
   // Spicy & Custom ranks are Survival only, lifesteal keys are Lifesteal only
   const lifestealKeyIds = ["core-key", "flux-key", "aura-key"];
-  const isTokenRank = productId ? productId.startsWith("token-") : false;
   const isSurvivalOnly = (isRank && ((product as RankProduct).tier === "spicy" || (product as RankProduct).tier === "custom"));
   const isLifestealOnly = productId ? lifestealKeyIds.includes(productId) : false;
-  const showServerSelector = !isSurvivalOnly && !isLifestealOnly && !isCurrency && !isKey && !isTokenRank;
+  const showServerSelector = !isSurvivalOnly && !isLifestealOnly && !isCurrency && !isKey;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -618,7 +527,7 @@ const Checkout = () => {
         { name: "⏱️ Duration", value: duration, inline: true },
         { name: "🎯 Minecraft Username", value: minecraftUsername, inline: true },
         { name: "🔢 Transfer ID", value: transferId, inline: true },
-        { name: "🖥️ Server", value: productId?.startsWith("token-") ? "Token SMP" : isSurvivalOnly ? "Survival" : isLifestealOnly ? "Lifesteal" : selectedServer.charAt(0).toUpperCase() + selectedServer.slice(1), inline: true },
+        { name: "🖥️ Server", value: isSurvivalOnly ? "Survival" : isLifestealOnly ? "Lifesteal" : selectedServer.charAt(0).toUpperCase() + selectedServer.slice(1), inline: true },
       ];
       
       // Add discount info
@@ -636,15 +545,15 @@ const Checkout = () => {
         embedFields.push({ name: "✨ Custom Rank Name", value: customRankName, inline: true });
       }
 
-      const webhookUrl = isTokenRank ? TOKEN_DISCORD_WEBHOOK_URL : DISCORD_WEBHOOK_URL;
+      const webhookUrl = DISCORD_WEBHOOK_URL;
 
       const embedPayload = {
         embeds: [{
-          title: isTokenRank ? "🎮 New Token SMP Purchase!" : "🎮 New Purchase Request!",
-          color: isCustomRank ? 0x10b981 : (isTokenRank ? 0xf59e0b : 0x00ff00),
+          title: "🎮 New Purchase Request!",
+          color: isCustomRank ? 0x10b981 : 0x00ff00,
           fields: embedFields,
           timestamp: new Date().toISOString(),
-          footer: { text: isTokenRank ? "TOKEN SMP Store" : "SPICY NETWORK Store" }
+          footer: { text: "SPICY NETWORK Store" }
         }]
       };
 
