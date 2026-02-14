@@ -20,7 +20,7 @@ import paymentQR from "@/assets/payment-qr.png";
 const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1459835220290441345/25r77rdGny-cj81NCY1ivV5l8C5Z78f9MswpNtg6l9peOEpr-EF55Is7cmTiAAEUfFht";
 
 
-type ProductType = "rank" | "key" | "currency";
+type ProductType = "rank" | "key" | "currency" | "token";
 
 interface RankProduct {
   type: "rank";
@@ -56,7 +56,17 @@ interface CurrencyProduct {
   qrLink: string;
 }
 
-type Product = RankProduct | KeyProduct | CurrencyProduct;
+interface TokenProduct {
+  type: "token";
+  name: string;
+  description: string;
+  emoji: string;
+  rarity: string;
+  price: number;
+  qrLink: string;
+}
+
+type Product = RankProduct | KeyProduct | CurrencyProduct | TokenProduct;
 
 const products: Record<string, Product> = {
   // Ranks - ordered by price (ascending)
@@ -292,6 +302,41 @@ const products: Record<string, Product> = {
     minQuantity: 100,
     qrLink: "https://spicysmp.dpdns.org/claimblocks.html",
   },
+  // Token products
+  "token-zombie": { type: "token", name: "Zombie Token", description: "A common mob token. Zombies roam the night!", emoji: "🧟", rarity: "common", price: 20, qrLink: "" },
+  "token-skeleton": { type: "token", name: "Skeleton Token", description: "A common mob token. Skilled archers of the dark!", emoji: "💀", rarity: "common", price: 20, qrLink: "" },
+  "token-spider": { type: "token", name: "Spider Token", description: "A common mob token. Wall-climbing predators!", emoji: "🕷️", rarity: "common", price: 20, qrLink: "" },
+  "token-pig": { type: "token", name: "Pig Token", description: "A common mob token. Friendly farm animals!", emoji: "🐷", rarity: "common", price: 20, qrLink: "" },
+  "token-bat": { type: "token", name: "Bat Token", description: "A common mob token. Cave dwellers!", emoji: "🦇", rarity: "common", price: 20, qrLink: "" },
+  "token-chicken": { type: "token", name: "Chicken Token", description: "A common mob token. Feathered friends!", emoji: "🐔", rarity: "common", price: 20, qrLink: "" },
+  "token-squid": { type: "token", name: "Squid Token", description: "A common mob token. Ocean creatures!", emoji: "🦑", rarity: "common", price: 20, qrLink: "" },
+  "token-horse": { type: "token", name: "Horse Token", description: "A common mob token. Swift steeds!", emoji: "🐴", rarity: "common", price: 20, qrLink: "" },
+  "token-blaze": { type: "token", name: "Blaze Token", description: "An uncommon mob token. Nether fire spirits!", emoji: "🔥", rarity: "uncommon", price: 30, qrLink: "" },
+  "token-guardian": { type: "token", name: "Guardian Token", description: "An uncommon mob token. Ocean monument protectors!", emoji: "🐡", rarity: "uncommon", price: 30, qrLink: "" },
+  "token-snow-golem": { type: "token", name: "Snow Golem Token", description: "An uncommon mob token. Frosty defenders!", emoji: "⛄", rarity: "uncommon", price: 30, qrLink: "" },
+  "token-wolf": { type: "token", name: "Wolf Token", description: "An uncommon mob token. Loyal companions!", emoji: "🐺", rarity: "uncommon", price: 30, qrLink: "" },
+  "token-bee": { type: "token", name: "Bee Token", description: "An uncommon mob token. Buzzing workers!", emoji: "🐝", rarity: "uncommon", price: 30, qrLink: "" },
+  "token-witch": { type: "token", name: "Witch Token", description: "An uncommon mob token. Potion brewers!", emoji: "🧙", rarity: "uncommon", price: 30, qrLink: "" },
+  "token-frog": { type: "token", name: "Frog Token", description: "An uncommon mob token. Swamp jumpers!", emoji: "🐸", rarity: "uncommon", price: 30, qrLink: "" },
+  "token-iron-golem": { type: "token", name: "Iron Golem Token", description: "An uncommon mob token. Village protectors!", emoji: "🤖", rarity: "uncommon", price: 30, qrLink: "" },
+  "token-wither-skeleton": { type: "token", name: "Wither Skeleton Token", description: "A rare mob token. Dark fortress warriors!", emoji: "☠️", rarity: "rare", price: 50, qrLink: "" },
+  "token-ender-guardian": { type: "token", name: "Ender Guardian Token", description: "A rare mob token. End dimension protectors!", emoji: "👁️", rarity: "rare", price: 50, qrLink: "" },
+  "token-evoker": { type: "token", name: "Evoker Token", description: "A rare mob token. Vex summoners!", emoji: "🧙‍♂️", rarity: "rare", price: 50, qrLink: "" },
+  "token-pillager": { type: "token", name: "Pillager Token", description: "A rare mob token. Crossbow raiders!", emoji: "🏹", rarity: "rare", price: 50, qrLink: "" },
+  "token-shulker": { type: "token", name: "Shulker Token", description: "A rare mob token. End city guardians!", emoji: "📦", rarity: "rare", price: 50, qrLink: "" },
+  "token-vindicator": { type: "token", name: "Vindicator Token", description: "A rare mob token. Axe-wielding illagers!", emoji: "🪓", rarity: "rare", price: 50, qrLink: "" },
+  "token-ravager": { type: "token", name: "Ravager Token", description: "An epic mob token. Devastating raid beast!", emoji: "🦏", rarity: "epic", price: 80, qrLink: "" },
+  "token-ender-dragon": { type: "token", name: "Ender Dragon Token", description: "A legendary mob token. The ultimate boss!", emoji: "🐉", rarity: "legendary", price: 100, qrLink: "" },
+  "token-warden": { type: "token", name: "Warden Token", description: "A mythic mob token. The most feared creature in the deep dark!", emoji: "👹", rarity: "mythic", price: 120, qrLink: "" },
+};
+
+const tokenRarityConfig: Record<string, { gradient: string; bgGradient: string; glow: string; accent: string }> = {
+  common: { gradient: "from-gray-400 to-gray-500", bgGradient: "from-gray-400/20 to-gray-500/20", glow: "0 0 40px hsla(0, 0%, 60%, 0.3)", accent: "text-gray-400" },
+  uncommon: { gradient: "from-green-400 to-green-600", bgGradient: "from-green-400/20 to-green-600/20", glow: "0 0 40px hsla(140, 70%, 50%, 0.3)", accent: "text-green-400" },
+  rare: { gradient: "from-blue-400 to-blue-600", bgGradient: "from-blue-400/20 to-blue-600/20", glow: "0 0 40px hsla(220, 70%, 50%, 0.3)", accent: "text-blue-400" },
+  epic: { gradient: "from-purple-400 to-purple-600", bgGradient: "from-purple-400/20 to-purple-600/20", glow: "0 0 40px hsla(280, 70%, 50%, 0.35)", accent: "text-purple-400" },
+  legendary: { gradient: "from-yellow-400 to-orange-500", bgGradient: "from-yellow-400/20 to-orange-500/20", glow: "0 0 40px hsla(45, 100%, 50%, 0.4)", accent: "text-yellow-400" },
+  mythic: { gradient: "from-red-400 to-pink-600", bgGradient: "from-red-400/20 to-pink-600/20", glow: "0 0 50px hsla(0, 80%, 50%, 0.45)", accent: "text-red-400" },
 };
 
 const tierConfig: Record<string, { icon: typeof Star; gradient: string; bgGradient: string; glow: string; accent: string }> = {
@@ -384,12 +429,14 @@ const Checkout = () => {
   const isCurrency = product?.type === "currency";
   const isRank = product?.type === "rank";
   const isKey = product?.type === "key";
+  const isToken = product?.type === "token";
   
-  // Spicy & Custom ranks are Survival only, lifesteal keys are Lifesteal only
+  // Spicy & Custom ranks are Survival only, lifesteal keys are Lifesteal only, tokens are Token SMP only
   const lifestealKeyIds = ["core-key", "flux-key", "aura-key"];
   const isSurvivalOnly = (isRank && ((product as RankProduct).tier === "spicy" || (product as RankProduct).tier === "custom"));
   const isLifestealOnly = productId ? lifestealKeyIds.includes(productId) : false;
-  const showServerSelector = !isSurvivalOnly && !isLifestealOnly && !isCurrency && !isKey;
+  const isTokenProduct = isToken || (productId?.startsWith("token-") ?? false);
+  const showServerSelector = !isSurvivalOnly && !isLifestealOnly && !isCurrency && !isKey && !isTokenProduct;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -508,6 +555,9 @@ const Checkout = () => {
       } else if (isCurrencyProduct) {
         price = currencyQuantity * (product as CurrencyProduct).ratePerUnit;
         quantity = `${currencyQuantity} ${(product as CurrencyProduct).unit}`;
+      } else if (product?.type === "token") {
+        price = (product as TokenProduct).price;
+        quantity = 1;
       }
       
       // Apply site discount if active
@@ -527,7 +577,7 @@ const Checkout = () => {
         { name: "⏱️ Duration", value: duration, inline: true },
         { name: "🎯 Minecraft Username", value: minecraftUsername, inline: true },
         { name: "🔢 Transfer ID", value: transferId, inline: true },
-        { name: "🖥️ Server", value: isSurvivalOnly ? "Survival" : isLifestealOnly ? "Lifesteal" : selectedServer.charAt(0).toUpperCase() + selectedServer.slice(1), inline: true },
+        { name: "🖥️ Server", value: isTokenProduct ? "Token SMP" : isSurvivalOnly ? "Survival" : isLifestealOnly ? "Lifesteal" : selectedServer.charAt(0).toUpperCase() + selectedServer.slice(1), inline: true },
       ];
       
       // Add discount info
@@ -617,12 +667,13 @@ const Checkout = () => {
     },
   };
 
+  const tokenConfig = isToken ? tokenRarityConfig[(product as TokenProduct).rarity] : null;
   const config = isRank ? tierConfig[(product as RankProduct).tier] : isCurrency && productId ? currencyConfig[productId] : null;
   const Icon = config?.icon || (isCurrency ? (productId === "coins" ? Coins : MapPin) : Key);
-  const gradient = config?.gradient || (isKey && (product as KeyProduct).isFree ? "from-accent to-cyan-400" : "from-secondary to-amber-400");
-  const bgGradient = config?.bgGradient || (isKey && (product as KeyProduct).isFree ? "from-accent/20 to-cyan-400/20" : "from-secondary/20 to-amber-400/20");
-  const glow = config?.glow || (isKey && (product as KeyProduct).isFree ? "0 0 80px hsla(185, 100%, 50%, 0.3)" : "0 0 80px hsla(45, 100%, 50%, 0.3)");
-  const accent = config?.accent || (isKey && (product as KeyProduct).isFree ? "text-accent" : "text-secondary");
+  const gradient = tokenConfig?.gradient || config?.gradient || (isKey && (product as KeyProduct).isFree ? "from-accent to-cyan-400" : "from-secondary to-amber-400");
+  const bgGradient = tokenConfig?.bgGradient || config?.bgGradient || (isKey && (product as KeyProduct).isFree ? "from-accent/20 to-cyan-400/20" : "from-secondary/20 to-amber-400/20");
+  const glow = tokenConfig?.glow || config?.glow || (isKey && (product as KeyProduct).isFree ? "0 0 80px hsla(185, 100%, 50%, 0.3)" : "0 0 80px hsla(45, 100%, 50%, 0.3)");
+  const accent = tokenConfig?.accent || config?.accent || (isKey && (product as KeyProduct).isFree ? "text-accent" : "text-secondary");
 
   // Discount configuration - 10% off until Jan 20, 2026
   const discountEndDate = new Date('2026-01-20T23:59:59');
@@ -637,6 +688,8 @@ const Checkout = () => {
     originalPrice = (product as KeyProduct).price * keyQuantity;
   } else if (isCurrency) {
     originalPrice = currencyQuantity * (product as CurrencyProduct).ratePerUnit;
+  } else if (isToken) {
+    originalPrice = (product as TokenProduct).price;
   }
   
   // Apply site-wide discount first
@@ -703,6 +756,15 @@ const Checkout = () => {
                     alt={product.name}
                     className="w-full aspect-video object-cover"
                   />
+                ) : isToken ? (
+                  <div className={`w-full aspect-video bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+                    <motion.div
+                      animate={{ scale: [1, 1.15, 1], rotate: [0, 5, -5, 0] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    >
+                      <span className="text-8xl">{(product as TokenProduct).emoji}</span>
+                    </motion.div>
+                  </div>
                 ) : isCurrency ? (
                   <div className={`w-full aspect-video bg-gradient-to-br ${gradient} flex items-center justify-center`}>
                     <motion.div
@@ -732,7 +794,7 @@ const Checkout = () => {
                 <div className={`absolute top-4 left-4 px-4 py-2 rounded-full bg-gradient-to-r ${gradient} flex items-center gap-2`}>
                   <Icon className="w-4 h-4 text-white" />
                   <span className="text-sm font-display font-bold text-white">
-                    {isRank ? (product as RankProduct).tier.toUpperCase() : isCurrency ? "CURRENCY" : (product as KeyProduct).isFree ? "FREE" : "PREMIUM"}
+                    {isRank ? (product as RankProduct).tier.toUpperCase() : isToken ? (product as TokenProduct).rarity.toUpperCase() : isCurrency ? "CURRENCY" : (product as KeyProduct).isFree ? "FREE" : "PREMIUM"}
                   </span>
                 </div>
               </div>
@@ -910,7 +972,13 @@ const Checkout = () => {
                     </div>
                   )}
 
-                  {/* Duration selector (ranks only) */}
+                  {/* Token SMP badge */}
+                  {isTokenProduct && (
+                    <div className="text-center p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/30">
+                      <span className="text-sm font-display text-yellow-400">🎯 Token SMP</span>
+                    </div>
+                  )}
+
                   {isRank && (
                     <div>
                       <label className="block text-sm font-display text-muted-foreground mb-3">
@@ -945,7 +1013,7 @@ const Checkout = () => {
                   )}
 
                   {/* Quantity selector (keys only) */}
-                  {!isRank && !(product as KeyProduct).isFree && (
+                  {!isRank && !isToken && !isCurrency && !(product as KeyProduct).isFree && (
                     <div>
                       <label className="block text-sm font-display text-muted-foreground mb-3">
                         Select Quantity:
