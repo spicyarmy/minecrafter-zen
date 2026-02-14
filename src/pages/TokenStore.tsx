@@ -1,12 +1,12 @@
-import Navbar from "@/components/Navbar";
+import TokenNavbar from "@/components/TokenNavbar";
 import ParticleBackground from "@/components/ParticleBackground";
-import HeroSection from "@/components/HeroSection";
+import TokenHeroSection from "@/components/TokenHeroSection";
 import RanksSection from "@/components/RanksSection";
+import TokensSection from "@/components/TokensSection";
 import CurrencySection from "@/components/CurrencySection";
-import VideoSection from "@/components/VideoSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import CTASection from "@/components/CTASection";
-import Footer from "@/components/Footer";
+import TokenFooter from "@/components/TokenFooter";
 import GuidedTour from "@/components/GuidedTour";
 
 const TokenStore = () => {
@@ -14,14 +14,14 @@ const TokenStore = () => {
     <div className="min-h-screen bg-background relative overflow-hidden">
       <GuidedTour />
       <ParticleBackground />
-      <Navbar />
-      <HeroSection />
-      <VideoSection />
+      <TokenNavbar />
+      <TokenHeroSection />
+      <TokensSection />
       <RanksSection />
       <CurrencySection />
       <FeaturesSection />
       <CTASection />
-      <Footer />
+      <TokenFooter />
     </div>
   );
 };
