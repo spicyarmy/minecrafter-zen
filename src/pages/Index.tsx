@@ -14,8 +14,7 @@ import GuidedTour from "@/components/GuidedTour";
 const Index = () => {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Guided Tour for new users */}
-      <GuidedTour />
+      {/* Guided Tour disabled */}
       
       {/* Animated particle background */}
       <ParticleBackground />

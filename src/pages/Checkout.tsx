@@ -562,7 +562,7 @@ const Checkout = () => {
       
       // Apply site discount if active
       if (isDiscountActive) {
-        price = Math.round(price * 0.9);
+        price = Math.round(price * 0.8);
       }
       
       // Apply coupon discount if present
@@ -582,7 +582,7 @@ const Checkout = () => {
       
       // Add discount info
       if (isDiscountActive) {
-        embedFields.push({ name: "🎉 Site Discount", value: "10% OFF", inline: true });
+        embedFields.push({ name: "🔥 Site Discount", value: "20% OFF - Today Only", inline: true });
       }
       
       // Add coupon info if applied
@@ -675,10 +675,11 @@ const Checkout = () => {
   const glow = tokenConfig?.glow || config?.glow || (isKey && (product as KeyProduct).isFree ? "0 0 80px hsla(185, 100%, 50%, 0.3)" : "0 0 80px hsla(45, 100%, 50%, 0.3)");
   const accent = tokenConfig?.accent || config?.accent || (isKey && (product as KeyProduct).isFree ? "text-accent" : "text-secondary");
 
-  // Discount configuration - 10% off until Jan 20, 2026
-  const discountEndDate = new Date('2026-01-20T23:59:59');
+  // Discount configuration - 20% off, only for today
+  const today = new Date();
+  const discountEndDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
   const isDiscountActive = new Date() <= discountEndDate;
-  const siteDiscountPercent = 10;
+  const siteDiscountPercent = 20;
 
   // Calculate prices based on product type
   let originalPrice = 0;
@@ -921,7 +922,7 @@ const Checkout = () => {
                   >
                     <Sparkles className="w-4 h-4 text-white" />
                     <span className="text-white font-display text-sm font-bold">
-                      🎉 10% OFF - Valid till 20 January!
+                      🔥 20% OFF - Only for Today!
                     </span>
                     <Sparkles className="w-4 h-4 text-white" />
                   </motion.div>
