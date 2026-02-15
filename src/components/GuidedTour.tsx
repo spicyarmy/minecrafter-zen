@@ -36,8 +36,8 @@ const tourSteps: TourStep[] = [
     position: "center",
   },
   {
-    title: "10% Discount Active! 🎉",
-    description: "Great news! All items have 10% OFF until January 20th. The discounted price is shown automatically at checkout!",
+    title: "20% Discount Active! 🔥",
+    description: "Great news! All items have 20% OFF today only! The discounted price is shown automatically at checkout!",
     icon: <Sparkles className="w-8 h-8" />,
     position: "center",
   },
