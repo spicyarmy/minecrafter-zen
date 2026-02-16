@@ -366,31 +366,31 @@ const products: Record<string, Product> = {
   "ob-vip": {
     type: "oneblock-rank",
     name: "VIP RANK",
-    description: "Start strong on One Block with VIP perks, exclusive kit, and essential commands.",
+    description: "Start strong on One Block with an Iron-tier kit and essential tools.",
     price: 30,
     tier: "ob-vip",
-    perks: ["/Kit", "/Fly", "2 Home Slots", "Priority Support"],
-    kitItems: ["Diamond Tools (Enchanted)", "Diamond Armor Set", "Oak Sapling", "Water Bucket", "Lava Bucket", "Golden Apple x64"],
+    perks: [],
+    kitItems: ["Iron Sword", "Iron Pickaxe", "Iron Axe", "Iron Shovel", "Shield", "Iron Boots", "Iron Leggings", "Iron Chestplate", "Iron Helmet", "Oak Sapling x2", "Bucket of Milk", "Lava Bucket", "Water Bucket", "Golden Apple x64", "Totem of Undying", "Coconut x32", "Amethyst Shard", "Blue Ice"],
     qrLink: "",
   },
   "ob-demon": {
     type: "oneblock-rank",
     name: "DEMON RANK",
-    description: "Unleash dark power on One Block with Netherite gear and advanced abilities.",
+    description: "Power up with Diamond-tier gear and valuable extras on One Block.",
     price: 50,
     tier: "ob-demon",
-    perks: ["/Kit", "/Fly", "/Withdraw", "4 Home Slots", "4 Auction Slots"],
-    kitItems: ["Netherite Tools (Enchanted)", "Netherite Armor Set", "Chestplate (Protection IV)", "Golden Apple x64", "Spawner", "Totem of Undying x3"],
+    perks: [],
+    kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Diamond Shovel", "Shield", "Diamond Boots", "Diamond Leggings", "Diamond Chestplate", "Diamond Helmet", "Oak Sapling x2", "Bucket of Milk", "Lava Bucket", "Water Bucket", "Golden Apple x64", "Totem of Undying", "Coconut x32", "Amethyst Shard", "Blue Ice"],
     qrLink: "",
   },
   "ob-spicy": {
     type: "oneblock-rank",
     name: "SPICY RANK",
-    description: "The ultimate One Block rank! Max enchants, exclusive items, and all perks unlocked.",
+    description: "The ultimate One Block rank! Full Netherite kit, free team names, /fly & all commands.",
     price: 80,
     tier: "ob-spicy",
-    perks: ["/Kit", "/Fly", "/Withdraw", "Unlimited Homes", "Unlimited Auctions", "VIP Priority"],
-    kitItems: ["Netherite Sword (Max Enchant)", "Netherite Pickaxe (Max Enchant)", "Netherite Axe", "Netherite Armor (Silence Trim, Max Enchant)", "Notch Apple x64", "Spawner x3", "Mace", "Totem of Undying x3"],
+    perks: ["2 Free Team Name Changes", "/Fly Access", "All Commands Unlocked"],
+    kitItems: ["Netherite Sword", "Netherite Pickaxe", "Netherite Axe", "Netherite Shovel", "Netherite Boots", "Netherite Leggings", "Netherite Chestplate", "Netherite Helmet", "Shield", "Lava Bucket", "Water Bucket", "Golden Apple x64", "Totem of Undying x3", "Spawner", "Mace", "Trident", "Wind Charge", "Shulker Box"],
     qrLink: "",
   },
   // One Block Keys
@@ -1015,14 +1015,14 @@ const Checkout = () => {
               </h1>
               <p className="text-muted-foreground mb-6">{product.description}</p>
 
-              {/* Perks/Rewards - Only show for ranks, keys, and one block ranks */}
-              {(isRank || isKey || isOneBlockRank) && (
+              {/* Perks/Rewards - Only show for ranks and keys */}
+              {(isRank || isKey) && (
                 <div className="space-y-3 mb-6">
                   <h3 className="font-display text-sm uppercase tracking-wider text-muted-foreground">
-                    {(isRank || isOneBlockRank) ? "Perks Included" : "Possible Rewards"}
+                    {isRank ? "Perks Included" : "Possible Rewards"}
                   </h3>
                   <div className="grid grid-cols-2 gap-2">
-                    {((isRank ? (product as RankProduct).perks : isOneBlockRank ? (product as OneBlockRankProduct).perks : (product as KeyProduct).rewards)).map((item, index) => (
+                    {((isRank ? (product as RankProduct).perks : (product as KeyProduct).rewards)).map((item, index) => (
                       <motion.div
                         key={item}
                         className="flex items-center gap-2 p-3 rounded-lg glass border border-border/50"
@@ -1035,6 +1035,50 @@ const Checkout = () => {
                       </motion.div>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {/* One Block Rank - Kit Items + Bonuses */}
+              {isOneBlockRank && (
+                <div className="space-y-3 mb-6">
+                  <h3 className="font-display text-sm uppercase tracking-wider text-muted-foreground">
+                    Kit Items
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {(product as OneBlockRankProduct).kitItems.map((item, index) => (
+                      <motion.div
+                        key={item}
+                        className="flex items-center gap-2 p-3 rounded-lg glass border border-border/50"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        <Package className={`w-4 h-4 ${accent} flex-shrink-0`} />
+                        <span className="text-sm text-foreground">{item}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                  {(product as OneBlockRankProduct).perks.length > 0 && (
+                    <>
+                      <h3 className="font-display text-sm uppercase tracking-wider text-muted-foreground mt-4">
+                        Bonus Perks
+                      </h3>
+                      <div className="grid grid-cols-2 gap-2">
+                        {(product as OneBlockRankProduct).perks.map((perk, index) => (
+                          <motion.div
+                            key={perk}
+                            className="flex items-center gap-2 p-3 rounded-lg glass border border-border/50"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                          >
+                            <Star className={`w-4 h-4 text-orange-400 flex-shrink-0`} />
+                            <span className="text-sm font-semibold text-orange-400">{perk}</span>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
