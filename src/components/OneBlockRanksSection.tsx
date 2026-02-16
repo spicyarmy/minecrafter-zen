@@ -7,38 +7,38 @@ const ranks = [
   {
     id: "ob-vip",
     name: "VIP RANK",
-    description: "Start strong on One Block with VIP perks, exclusive kit, and essential commands.",
+    description: "Start strong on One Block with an Iron-tier kit and essential tools.",
     price: 30,
     icon: Star,
     gradient: "from-cyan-500 to-blue-600",
     glow: "0 0 30px hsla(185, 100%, 50%, 0.4)",
     accent: "text-cyan-400",
-    kitItems: ["Diamond Tools (Enchanted)", "Diamond Armor Set", "Oak Sapling", "Water Bucket", "Lava Bucket", "Golden Apple x64"],
-    perks: ["/Kit", "/Fly", "2 Home Slots", "Priority Support"],
+    kitItems: ["Iron Sword", "Iron Pickaxe", "Iron Axe", "Iron Shovel", "Shield", "Iron Boots", "Iron Leggings", "Iron Chestplate", "Iron Helmet", "Oak Sapling x2", "Bucket of Milk", "Lava Bucket", "Water Bucket", "Golden Apple x64", "Totem of Undying", "Coconut x32", "Amethyst Shard", "Blue Ice"],
+    bonuses: [],
   },
   {
     id: "ob-demon",
     name: "DEMON RANK",
-    description: "Unleash dark power on One Block with Netherite gear and advanced abilities.",
+    description: "Power up with Diamond-tier gear and valuable extras on One Block.",
     price: 50,
     icon: Skull,
     gradient: "from-red-500 to-rose-600",
     glow: "0 0 30px hsla(0, 100%, 50%, 0.4)",
     accent: "text-red-400",
-    kitItems: ["Netherite Tools (Enchanted)", "Netherite Armor Set", "Chestplate (Protection IV)", "Golden Apple x64", "Spawner", "Totem of Undying x3"],
-    perks: ["/Kit", "/Fly", "/Withdraw", "4 Home Slots", "4 Auction Slots"],
+    kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Diamond Shovel", "Shield", "Diamond Boots", "Diamond Leggings", "Diamond Chestplate", "Diamond Helmet", "Oak Sapling x2", "Bucket of Milk", "Lava Bucket", "Water Bucket", "Golden Apple x64", "Totem of Undying", "Coconut x32", "Amethyst Shard", "Blue Ice"],
+    bonuses: [],
   },
   {
     id: "ob-spicy",
     name: "SPICY RANK",
-    description: "The ultimate One Block rank! Max enchants, exclusive items, and all perks unlocked.",
+    description: "The ultimate One Block rank! Full Netherite kit, free team names, /fly & all commands.",
     price: 80,
     icon: Flame,
     gradient: "from-orange-500 to-red-600",
     glow: "0 0 30px hsla(20, 100%, 50%, 0.5)",
     accent: "text-orange-400",
-    kitItems: ["Netherite Sword (Max Enchant)", "Netherite Pickaxe (Max Enchant)", "Netherite Axe", "Netherite Armor (Silence Trim, Max Enchant)", "Notch Apple x64", "Spawner x3", "Mace", "Totem of Undying x3"],
-    perks: ["/Kit", "/Fly", "/Withdraw", "Unlimited Homes", "Unlimited Auctions", "VIP Priority"],
+    kitItems: ["Netherite Sword", "Netherite Pickaxe", "Netherite Axe", "Netherite Shovel", "Netherite Boots", "Netherite Leggings", "Netherite Chestplate", "Netherite Helmet", "Shield", "Lava Bucket", "Water Bucket", "Golden Apple x64", "Totem of Undying x3", "Spawner", "Mace", "Trident", "Wind Charge", "Shulker Box"],
+    bonuses: ["2 Free Team Name Changes", "/Fly Access", "All Commands Unlocked"],
   },
 ];
 
@@ -89,18 +89,28 @@ const OneBlockRanksSection = () => {
                     <h3 className={`font-display text-xl font-bold mb-2 ${rank.accent}`}>{rank.name}</h3>
                     <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{rank.description}</p>
 
-                    {/* Perks preview */}
+                    {/* Kit preview */}
                     <div className="space-y-1 mb-4">
-                      {rank.perks.slice(0, 4).map((perk) => (
-                        <div key={perk} className="flex items-center gap-2 text-xs text-muted-foreground">
+                      {rank.kitItems.slice(0, 4).map((item) => (
+                        <div key={item} className="flex items-center gap-2 text-xs text-muted-foreground">
                           <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${rank.gradient}`} />
-                          {perk}
+                          {item}
                         </div>
                       ))}
-                      {rank.perks.length > 4 && (
-                        <span className="text-xs text-muted-foreground/70">+{rank.perks.length - 4} more</span>
+                      {rank.kitItems.length > 4 && (
+                        <span className="text-xs text-muted-foreground/70">+{rank.kitItems.length - 4} more items</span>
                       )}
                     </div>
+                    {rank.bonuses.length > 0 && (
+                      <div className="space-y-1 mb-4 pt-2 border-t border-border/30">
+                        {rank.bonuses.map((bonus) => (
+                          <div key={bonus} className="flex items-center gap-2 text-xs font-semibold text-orange-400">
+                            <span>⭐</span>
+                            {bonus}
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
                     <div className="flex items-center gap-3 mb-4">
                       <span className={`font-display text-2xl font-bold bg-gradient-to-r ${rank.gradient} bg-clip-text text-transparent`}>₹{rank.price}</span>
