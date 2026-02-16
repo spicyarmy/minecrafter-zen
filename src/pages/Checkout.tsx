@@ -561,6 +561,7 @@ const Checkout = () => {
   // Form states
   const [minecraftUsername, setMinecraftUsername] = useState("");
   const [customRankName, setCustomRankName] = useState("");
+  const [teamPlayerNames, setTeamPlayerNames] = useState<string[]>([""]);
   const [transferId, setTransferId] = useState("");
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
@@ -604,6 +605,17 @@ const Checkout = () => {
       setCurrencyQuantity((product as OneBlockExtraProduct).minQuantity || 100);
     }
   }, [product]);
+
+  // Sync teamPlayerNames array with playerCount
+  useEffect(() => {
+    if (isOneBlockPerPlayer) {
+      setTeamPlayerNames((prev) => {
+        const newArr = [...prev];
+        while (newArr.length < playerCount) newArr.push("");
+        return newArr.slice(0, playerCount);
+      });
+    }
+  }, [playerCount, isOneBlockPerPlayer]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -675,7 +687,7 @@ const Checkout = () => {
   };
 
   const handleSubmit = async () => {
-    if (!minecraftUsername.trim()) {
+    if (!isOneBlockPerPlayer && !minecraftUsername.trim()) {
       toast.error("Please enter your Minecraft username");
       return;
     }
@@ -685,6 +697,10 @@ const Checkout = () => {
     }
     if (isOneBlockPerPlayer && !customRankName.trim()) {
       toast.error("Please enter your team name");
+      return;
+    }
+    if (isOneBlockPerPlayer && teamPlayerNames.some((n) => !n.trim())) {
+      toast.error("Please enter all player Minecraft usernames");
       return;
     }
     if (!transferId.trim()) {
@@ -756,7 +772,7 @@ const Checkout = () => {
         { name: "🔢 Quantity", value: `${quantity}`, inline: true },
         { name: "💰 Final Price", value: `₹${price}`, inline: true },
         { name: "⏱️ Duration", value: duration, inline: true },
-        { name: "🎯 Minecraft Username", value: minecraftUsername, inline: true },
+        { name: "🎯 Minecraft Username", value: isOneBlockPerPlayer ? teamPlayerNames.join(", ") : minecraftUsername, inline: true },
         { name: "🔢 Transfer ID", value: transferId, inline: true },
         { name: "🖥️ Server", value: isOneBlockProduct ? "One Block" : isTokenProduct ? "Token SMP" : isSurvivalOnly ? "Survival" : isLifestealOnly ? "Lifesteal" : selectedServer.charAt(0).toUpperCase() + selectedServer.slice(1), inline: true },
       ];
@@ -777,6 +793,7 @@ const Checkout = () => {
       }
       if (isOneBlockPerPlayer && customRankName.trim()) {
         embedFields.push({ name: "👥 Team Name", value: customRankName, inline: true });
+        embedFields.push({ name: "🎮 Player Usernames", value: teamPlayerNames.join(", "), inline: false });
       }
 
       const webhookUrl = DISCORD_WEBHOOK_URL;
@@ -1625,17 +1642,20 @@ const Checkout = () => {
                     <>
                       {/* Form Fields */}
                       <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-display text-muted-foreground mb-2">
-                            Minecraft Username *
-                          </label>
-                          <Input
-                            placeholder="Enter your Minecraft username"
-                            value={minecraftUsername}
-                            onChange={(e) => setMinecraftUsername(e.target.value)}
-                            className="bg-background/50 border-border/50"
-                          />
-                        </div>
+                        {/* Minecraft Username - hide for per-player team product since we collect names separately */}
+                        {!isOneBlockPerPlayer && (
+                          <div>
+                            <label className="block text-sm font-display text-muted-foreground mb-2">
+                              Minecraft Username *
+                            </label>
+                            <Input
+                              placeholder="Enter your Minecraft username"
+                              value={minecraftUsername}
+                              onChange={(e) => setMinecraftUsername(e.target.value)}
+                              className="bg-background/50 border-border/50"
+                            />
+                          </div>
+                        )}
 
                         {/* Custom Rank Name Field */}
                         {isCustomRank && (
@@ -1660,26 +1680,51 @@ const Checkout = () => {
                           </motion.div>
                         )}
 
-                        {/* Team Name Field (One Block) */}
+                        {/* Team Name + Player Names (One Block) */}
                         {isOneBlockPerPlayer && (
                           <motion.div
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
-                            className="overflow-hidden"
+                            className="overflow-hidden space-y-4"
                           >
-                            <label className="block text-sm font-display text-muted-foreground mb-2">
-                              Your Team Name *
-                            </label>
-                            <Input
-                              placeholder="Enter your team name"
-                              value={customRankName}
-                              onChange={(e) => setCustomRankName(e.target.value)}
-                              className="bg-background/50 border-border/50"
-                              maxLength={20}
-                            />
-                            <p className="text-xs text-muted-foreground mt-1">
-                              This will be your team's display name. Max 20 characters.
-                            </p>
+                            <div>
+                              <label className="block text-sm font-display text-muted-foreground mb-2">
+                                Your Team Name *
+                              </label>
+                              <Input
+                                placeholder="Enter your team name"
+                                value={customRankName}
+                                onChange={(e) => setCustomRankName(e.target.value)}
+                                className="bg-background/50 border-border/50"
+                                maxLength={20}
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
+                                This will be your team's display name. Max 20 characters.
+                              </p>
+                            </div>
+                            <div>
+                              <label className="block text-sm font-display text-muted-foreground mb-2">
+                                Player Minecraft Usernames ({playerCount} player{playerCount > 1 ? "s" : ""}) *
+                              </label>
+                              <div className="space-y-2">
+                                {teamPlayerNames.map((name, idx) => (
+                                  <Input
+                                    key={idx}
+                                    placeholder={`Player ${idx + 1} Minecraft username`}
+                                    value={name}
+                                    onChange={(e) => {
+                                      const updated = [...teamPlayerNames];
+                                      updated[idx] = e.target.value;
+                                      setTeamPlayerNames(updated);
+                                    }}
+                                    className="bg-background/50 border-border/50"
+                                  />
+                                ))}
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Enter the Minecraft username for each player in your team.
+                              </p>
+                            </div>
                           </motion.div>
                         )}
 
