@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ServerSelect from "./pages/ServerSelect";
 import Index from "./pages/Index";
 import TokenStore from "./pages/TokenStore";
+import OneBlockStore from "./pages/OneBlockStore";
 import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/" element={<ServerSelect />} />
           <Route path="/spicy" element={<Index />} />
           <Route path="/token" element={<TokenStore />} />
+          <Route path="/oneblock" element={<OneBlockStore />} />
           <Route path="/checkout/:productId" element={<Checkout />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Flame, Coins } from "lucide-react";
+import { Flame, Coins, Box } from "lucide-react";
 import ParticleBackground from "@/components/ParticleBackground";
 import tokenLogo from "@/assets/token-logo.png";
+import oneblockLogo from "@/assets/oneblock-logo.png";
 
 const ServerSelect = () => {
   const navigate = useNavigate();
@@ -37,11 +38,11 @@ const ServerSelect = () => {
         </motion.div>
 
         {/* Server Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {/* SPICY SMP Card */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
             whileHover={{ y: -10, scale: 1.02 }}
             className="group cursor-pointer"
@@ -54,24 +55,18 @@ const ServerSelect = () => {
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                 style={{ boxShadow: "inset 0 0 80px hsla(320, 100%, 50%, 0.1)" }}
               />
-
-              {/* Icon */}
               <div className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-orange-500/20 to-red-600/20 flex items-center justify-center">
                 <Flame className="w-12 h-12 text-orange-400" />
               </div>
-
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent">
                 SPICY SMP
               </h2>
               <p className="text-muted-foreground mb-6">
                 Ranks, Survival Keys, Lifesteal Keys, Coins & more
               </p>
-
               <div className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-orange-500 to-red-600 font-display font-bold text-white transition-all group-hover:shadow-[0_0_30px_hsla(20,100%,50%,0.5)]">
                 Enter Store →
               </div>
-
-              {/* Animated border */}
               <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                 <div className="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-r from-orange-500 to-red-600 [mask:linear-gradient(#fff_0_0)_padding-box,linear-gradient(#fff_0_0)] [mask-composite:exclude]" />
               </div>
@@ -80,8 +75,8 @@ const ServerSelect = () => {
 
           {/* TOKEN SMP Card */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.6 }}
             whileHover={{ y: -10, scale: 1.02 }}
             className="group cursor-pointer"
@@ -94,26 +89,54 @@ const ServerSelect = () => {
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                 style={{ boxShadow: "inset 0 0 80px hsla(45, 100%, 50%, 0.1)" }}
               />
-
-              {/* Token Logo */}
               <div className="w-24 h-24 mx-auto mb-6 rounded-2xl overflow-hidden">
                 <img src={tokenLogo} alt="Token SMP" className="w-full h-full object-cover" />
               </div>
-
               <h2 className="font-display text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-yellow-500 to-amber-600 bg-clip-text text-transparent">
                 TOKEN SMP
               </h2>
               <p className="text-muted-foreground mb-6">
-                Ranks, Coins, Claim Blocks & more
+                Ranks, Mob Tokens & more
               </p>
-
               <div className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-yellow-500 to-amber-600 font-display font-bold text-white transition-all group-hover:shadow-[0_0_30px_hsla(45,100%,50%,0.5)]">
                 Enter Store →
               </div>
-
-              {/* Animated border */}
               <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                 <div className="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-r from-yellow-500 to-amber-600 [mask:linear-gradient(#fff_0_0)_padding-box,linear-gradient(#fff_0_0)] [mask-composite:exclude]" />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* ONE BLOCK Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+            whileHover={{ y: -10, scale: 1.02 }}
+            className="group cursor-pointer"
+            onClick={() => navigate("/oneblock")}
+          >
+            <div
+              className="relative rounded-3xl bg-card border border-border/50 overflow-hidden transition-all duration-500 p-8 text-center h-full"
+              style={{ boxShadow: "0 0 60px hsla(160, 100%, 50%, 0.15)" }}
+            >
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                style={{ boxShadow: "inset 0 0 80px hsla(160, 100%, 50%, 0.1)" }}
+              />
+              <div className="w-24 h-24 mx-auto mb-6 rounded-2xl overflow-hidden">
+                <img src={oneblockLogo} alt="One Block" className="w-full h-full object-cover" />
+              </div>
+              <h2 className="font-display text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-emerald-400 to-green-600 bg-clip-text text-transparent">
+                ONE BLOCK
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Ranks, Keys, Team Names, Keep Inventory & more
+              </p>
+              <div className="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-emerald-400 to-green-600 font-display font-bold text-white transition-all group-hover:shadow-[0_0_30px_hsla(160,100%,50%,0.5)]">
+                Enter Store →
+              </div>
+              <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                <div className="absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-r from-emerald-400 to-green-600 [mask:linear-gradient(#fff_0_0)_padding-box,linear-gradient(#fff_0_0)] [mask-composite:exclude]" />
               </div>
             </div>
           </motion.div>

@@ -20,7 +20,7 @@ import paymentQR from "@/assets/payment-qr.png";
 const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1459835220290441345/25r77rdGny-cj81NCY1ivV5l8C5Z78f9MswpNtg6l9peOEpr-EF55Is7cmTiAAEUfFht";
 
 
-type ProductType = "rank" | "key" | "currency" | "token";
+type ProductType = "rank" | "key" | "currency" | "token" | "oneblock-rank" | "oneblock-key" | "oneblock-extra";
 
 interface RankProduct {
   type: "rank";
@@ -66,7 +66,41 @@ interface TokenProduct {
   qrLink: string;
 }
 
-type Product = RankProduct | KeyProduct | CurrencyProduct | TokenProduct;
+interface OneBlockRankProduct {
+  type: "oneblock-rank";
+  name: string;
+  description: string;
+  price: number;
+  perks: string[];
+  kitItems: string[];
+  tier: string;
+  qrLink: string;
+}
+
+interface OneBlockKeyProduct {
+  type: "oneblock-key";
+  name: string;
+  description: string;
+  price: number;
+  rarity: string;
+  qrLink: string;
+}
+
+interface OneBlockExtraProduct {
+  type: "oneblock-extra";
+  name: string;
+  description: string;
+  price: number;
+  unit: string;
+  isPerPlayer?: boolean;
+  isMonthly?: boolean;
+  isClaimBlock?: boolean;
+  minQuantity?: number;
+  ratePerUnit?: number;
+  qrLink: string;
+}
+
+type Product = RankProduct | KeyProduct | CurrencyProduct | TokenProduct | OneBlockRankProduct | OneBlockKeyProduct | OneBlockExtraProduct;
 
 const products: Record<string, Product> = {
   // Ranks - ordered by price (ascending)
@@ -328,6 +362,100 @@ const products: Record<string, Product> = {
   "token-ravager": { type: "token", name: "Ravager Token", description: "An epic mob token. Devastating raid beast!", emoji: "🦏", rarity: "epic", price: 80, qrLink: "" },
   "token-ender-dragon": { type: "token", name: "Ender Dragon Token", description: "A legendary mob token. The ultimate boss!", emoji: "🐉", rarity: "legendary", price: 100, qrLink: "" },
   "token-warden": { type: "token", name: "Warden Token", description: "A mythic mob token. The most feared creature in the deep dark!", emoji: "👹", rarity: "mythic", price: 120, qrLink: "" },
+  // One Block Ranks
+  "ob-vip": {
+    type: "oneblock-rank",
+    name: "VIP RANK",
+    description: "Start strong on One Block with VIP perks, exclusive kit, and essential commands.",
+    price: 30,
+    tier: "ob-vip",
+    perks: ["/Kit", "/Fly", "2 Home Slots", "Priority Support"],
+    kitItems: ["Diamond Tools (Enchanted)", "Diamond Armor Set", "Oak Sapling", "Water Bucket", "Lava Bucket", "Golden Apple x64"],
+    qrLink: "",
+  },
+  "ob-demon": {
+    type: "oneblock-rank",
+    name: "DEMON RANK",
+    description: "Unleash dark power on One Block with Netherite gear and advanced abilities.",
+    price: 50,
+    tier: "ob-demon",
+    perks: ["/Kit", "/Fly", "/Withdraw", "4 Home Slots", "4 Auction Slots"],
+    kitItems: ["Netherite Tools (Enchanted)", "Netherite Armor Set", "Chestplate (Protection IV)", "Golden Apple x64", "Spawner", "Totem of Undying x3"],
+    qrLink: "",
+  },
+  "ob-spicy": {
+    type: "oneblock-rank",
+    name: "SPICY RANK",
+    description: "The ultimate One Block rank! Max enchants, exclusive items, and all perks unlocked.",
+    price: 80,
+    tier: "ob-spicy",
+    perks: ["/Kit", "/Fly", "/Withdraw", "Unlimited Homes", "Unlimited Auctions", "VIP Priority"],
+    kitItems: ["Netherite Sword (Max Enchant)", "Netherite Pickaxe (Max Enchant)", "Netherite Axe", "Netherite Armor (Silence Trim, Max Enchant)", "Notch Apple x64", "Spawner x3", "Mace", "Totem of Undying x3"],
+    qrLink: "",
+  },
+  // One Block Keys
+  "ob-key-common": {
+    type: "oneblock-key",
+    name: "Common Key",
+    description: "Basic rewards including ores, food, and starter gear.",
+    price: 5,
+    rarity: "Common",
+    qrLink: "",
+  },
+  "ob-key-rare": {
+    type: "oneblock-key",
+    name: "Rare Key",
+    description: "Better rewards with enchanted gear, spawners, and golden apples.",
+    price: 10,
+    rarity: "Rare",
+    qrLink: "",
+  },
+  "ob-key-epic": {
+    type: "oneblock-key",
+    name: "Epic Key",
+    description: "Epic rewards with netherite gear, special items, and notch apples.",
+    price: 15,
+    rarity: "Epic",
+    qrLink: "",
+  },
+  "ob-key-legendary": {
+    type: "oneblock-key",
+    name: "Legendary Key",
+    description: "The best rewards! Max enchanted gear, mace, totems, and more.",
+    price: 20,
+    rarity: "Legendary",
+    qrLink: "",
+  },
+  // One Block Extras
+  "ob-team-name": {
+    type: "oneblock-extra",
+    name: "Custom Team Name",
+    description: "Create your own team identity! Set a custom team name visible to all players.",
+    price: 10,
+    unit: "player",
+    isPerPlayer: true,
+    qrLink: "",
+  },
+  "ob-claimblocks": {
+    type: "oneblock-extra",
+    name: "Claim Blocks",
+    description: "Protect your builds! Claim blocks let you expand your protected territory on One Block.",
+    price: 1,
+    unit: "blocks",
+    isClaimBlock: true,
+    minQuantity: 100,
+    ratePerUnit: 1,
+    qrLink: "",
+  },
+  "ob-keep-inventory": {
+    type: "oneblock-extra",
+    name: "Keep Inventory",
+    description: "Never lose your items on death! Keep your entire inventory safe for a full month.",
+    price: 50,
+    unit: "month",
+    isMonthly: true,
+    qrLink: "",
+  },
 };
 
 const tokenRarityConfig: Record<string, { gradient: string; bgGradient: string; glow: string; accent: string }> = {
@@ -396,6 +524,28 @@ const tierConfig: Record<string, { icon: typeof Star; gradient: string; bgGradie
     glow: "0 0 80px hsla(280, 100%, 50%, 0.4)",
     accent: "text-purple-400",
   },
+  // One Block tiers
+  "ob-vip": {
+    icon: Star,
+    gradient: "from-cyan-500 to-blue-600",
+    bgGradient: "from-cyan-500/20 to-blue-600/20",
+    glow: "0 0 80px hsla(185, 100%, 50%, 0.4)",
+    accent: "text-cyan-400",
+  },
+  "ob-demon": {
+    icon: Skull,
+    gradient: "from-red-500 to-rose-600",
+    bgGradient: "from-red-500/20 to-rose-600/20",
+    glow: "0 0 80px hsla(0, 100%, 50%, 0.4)",
+    accent: "text-red-400",
+  },
+  "ob-spicy": {
+    icon: Flame,
+    gradient: "from-orange-500 to-red-600",
+    bgGradient: "from-orange-500/20 to-red-600/20",
+    glow: "0 0 80px hsla(20, 100%, 50%, 0.5)",
+    accent: "text-orange-400",
+  },
 };
 
 const Checkout = () => {
@@ -404,6 +554,7 @@ const Checkout = () => {
   const [selectedDuration, setSelectedDuration] = useState(0);
   const [keyQuantity, setKeyQuantity] = useState(1);
   const [currencyQuantity, setCurrencyQuantity] = useState(100);
+  const [playerCount, setPlayerCount] = useState(1);
   const [showKitItems, setShowKitItems] = useState(false);
   const [selectedServer, setSelectedServer] = useState<"survival" | "lifesteal">("survival");
   
@@ -430,19 +581,27 @@ const Checkout = () => {
   const isRank = product?.type === "rank";
   const isKey = product?.type === "key";
   const isToken = product?.type === "token";
+  const isOneBlockRank = product?.type === "oneblock-rank";
+  const isOneBlockKey = product?.type === "oneblock-key";
+  const isOneBlockExtra = product?.type === "oneblock-extra";
+  const isOneBlockProduct = isOneBlockRank || isOneBlockKey || isOneBlockExtra;
+  const isOneBlockClaimBlock = isOneBlockExtra && (product as OneBlockExtraProduct).isClaimBlock;
+  const isOneBlockPerPlayer = isOneBlockExtra && (product as OneBlockExtraProduct).isPerPlayer;
   
   // Spicy & Custom ranks are Survival only, lifesteal keys are Lifesteal only, tokens are Token SMP only
   const lifestealKeyIds = ["core-key", "flux-key", "aura-key"];
   const isSurvivalOnly = (isRank && ((product as RankProduct).tier === "spicy" || (product as RankProduct).tier === "custom"));
   const isLifestealOnly = productId ? lifestealKeyIds.includes(productId) : false;
   const isTokenProduct = isToken || (productId?.startsWith("token-") ?? false);
-  const showServerSelector = !isSurvivalOnly && !isLifestealOnly && !isCurrency && !isKey && !isTokenProduct;
+  const showServerSelector = !isSurvivalOnly && !isLifestealOnly && !isCurrency && !isKey && !isTokenProduct && !isOneBlockProduct;
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    // Set initial currency quantity based on min quantity
     if (product?.type === "currency") {
       setCurrencyQuantity((product as CurrencyProduct).minQuantity);
+    }
+    if (isOneBlockClaimBlock) {
+      setCurrencyQuantity((product as OneBlockExtraProduct).minQuantity || 100);
     }
   }, [product]);
 
@@ -524,6 +683,10 @@ const Checkout = () => {
       toast.error("Please enter your custom rank name");
       return;
     }
+    if (isOneBlockPerPlayer && !customRankName.trim()) {
+      toast.error("Please enter your team name");
+      return;
+    }
     if (!transferId.trim()) {
       toast.error("Please enter your Transfer ID");
       return;
@@ -558,6 +721,24 @@ const Checkout = () => {
       } else if (product?.type === "token") {
         price = (product as TokenProduct).price;
         quantity = 1;
+      } else if (product?.type === "oneblock-rank") {
+        price = (product as OneBlockRankProduct).price;
+        duration = "30 Days";
+      } else if (product?.type === "oneblock-key") {
+        price = (product as OneBlockKeyProduct).price * keyQuantity;
+        quantity = keyQuantity;
+      } else if (product?.type === "oneblock-extra") {
+        const extra = product as OneBlockExtraProduct;
+        if (extra.isClaimBlock) {
+          price = currencyQuantity * (extra.ratePerUnit || 1);
+          quantity = `${currencyQuantity} blocks`;
+        } else if (extra.isPerPlayer) {
+          price = extra.price * playerCount;
+          quantity = `${playerCount} player(s)`;
+        } else {
+          price = extra.price;
+          duration = "30 Days";
+        }
       }
       
       // Apply site discount if active
@@ -577,7 +758,7 @@ const Checkout = () => {
         { name: "⏱️ Duration", value: duration, inline: true },
         { name: "🎯 Minecraft Username", value: minecraftUsername, inline: true },
         { name: "🔢 Transfer ID", value: transferId, inline: true },
-        { name: "🖥️ Server", value: isTokenProduct ? "Token SMP" : isSurvivalOnly ? "Survival" : isLifestealOnly ? "Lifesteal" : selectedServer.charAt(0).toUpperCase() + selectedServer.slice(1), inline: true },
+        { name: "🖥️ Server", value: isOneBlockProduct ? "One Block" : isTokenProduct ? "Token SMP" : isSurvivalOnly ? "Survival" : isLifestealOnly ? "Lifesteal" : selectedServer.charAt(0).toUpperCase() + selectedServer.slice(1), inline: true },
       ];
       
       // Add discount info
@@ -593,6 +774,9 @@ const Checkout = () => {
       // Add custom rank name field if applicable
       if (isCustomRank && customRankName.trim()) {
         embedFields.push({ name: "✨ Custom Rank Name", value: customRankName, inline: true });
+      }
+      if (isOneBlockPerPlayer && customRankName.trim()) {
+        embedFields.push({ name: "👥 Team Name", value: customRankName, inline: true });
       }
 
       const webhookUrl = DISCORD_WEBHOOK_URL;
@@ -668,12 +852,24 @@ const Checkout = () => {
   };
 
   const tokenConfig = isToken ? tokenRarityConfig[(product as TokenProduct).rarity] : null;
+  const obRankConfig = isOneBlockRank ? tierConfig[(product as OneBlockRankProduct).tier] : null;
   const config = isRank ? tierConfig[(product as RankProduct).tier] : isCurrency && productId ? currencyConfig[productId] : null;
-  const Icon = config?.icon || (isCurrency ? (productId === "coins" ? Coins : MapPin) : Key);
-  const gradient = tokenConfig?.gradient || config?.gradient || (isKey && (product as KeyProduct).isFree ? "from-accent to-cyan-400" : "from-secondary to-amber-400");
-  const bgGradient = tokenConfig?.bgGradient || config?.bgGradient || (isKey && (product as KeyProduct).isFree ? "from-accent/20 to-cyan-400/20" : "from-secondary/20 to-amber-400/20");
-  const glow = tokenConfig?.glow || config?.glow || (isKey && (product as KeyProduct).isFree ? "0 0 80px hsla(185, 100%, 50%, 0.3)" : "0 0 80px hsla(45, 100%, 50%, 0.3)");
-  const accent = tokenConfig?.accent || config?.accent || (isKey && (product as KeyProduct).isFree ? "text-accent" : "text-secondary");
+  
+  // One Block key/extra visual configs
+  const obKeyRarityMap: Record<string, { gradient: string; bgGradient: string; glow: string; accent: string }> = {
+    Common: { gradient: "from-gray-400 to-gray-500", bgGradient: "from-gray-400/20 to-gray-500/20", glow: "0 0 60px hsla(0, 0%, 60%, 0.3)", accent: "text-gray-400" },
+    Rare: { gradient: "from-blue-400 to-blue-600", bgGradient: "from-blue-400/20 to-blue-600/20", glow: "0 0 60px hsla(220, 70%, 50%, 0.3)", accent: "text-blue-400" },
+    Epic: { gradient: "from-purple-400 to-purple-600", bgGradient: "from-purple-400/20 to-purple-600/20", glow: "0 0 60px hsla(280, 70%, 50%, 0.35)", accent: "text-purple-400" },
+    Legendary: { gradient: "from-yellow-400 to-orange-500", bgGradient: "from-yellow-400/20 to-orange-500/20", glow: "0 0 60px hsla(45, 100%, 50%, 0.4)", accent: "text-yellow-400" },
+  };
+  const obKeyConfig = isOneBlockKey ? obKeyRarityMap[(product as OneBlockKeyProduct).rarity] : null;
+  const obExtraConfig = isOneBlockExtra ? { gradient: "from-emerald-400 to-green-600", bgGradient: "from-emerald-400/20 to-green-600/20", glow: "0 0 60px hsla(160, 100%, 50%, 0.3)", accent: "text-emerald-400" } : null;
+
+  const Icon = config?.icon || obRankConfig?.icon || (isCurrency ? (productId === "coins" ? Coins : MapPin) : Key);
+  const gradient = tokenConfig?.gradient || obRankConfig?.gradient || obKeyConfig?.gradient || obExtraConfig?.gradient || config?.gradient || (isKey && (product as KeyProduct).isFree ? "from-accent to-cyan-400" : "from-secondary to-amber-400");
+  const bgGradient = tokenConfig?.bgGradient || obRankConfig?.bgGradient || obKeyConfig?.bgGradient || obExtraConfig?.bgGradient || config?.bgGradient || (isKey && (product as KeyProduct).isFree ? "from-accent/20 to-cyan-400/20" : "from-secondary/20 to-amber-400/20");
+  const glow = tokenConfig?.glow || obRankConfig?.glow || obKeyConfig?.glow || obExtraConfig?.glow || config?.glow || (isKey && (product as KeyProduct).isFree ? "0 0 80px hsla(185, 100%, 50%, 0.3)" : "0 0 80px hsla(45, 100%, 50%, 0.3)");
+  const accent = tokenConfig?.accent || obRankConfig?.accent || obKeyConfig?.accent || obExtraConfig?.accent || config?.accent || (isKey && (product as KeyProduct).isFree ? "text-accent" : "text-secondary");
 
   // Discount configuration - 20% off, only for today
   const today = new Date();
@@ -691,6 +887,19 @@ const Checkout = () => {
     originalPrice = currencyQuantity * (product as CurrencyProduct).ratePerUnit;
   } else if (isToken) {
     originalPrice = (product as TokenProduct).price;
+  } else if (isOneBlockRank) {
+    originalPrice = (product as OneBlockRankProduct).price;
+  } else if (isOneBlockKey) {
+    originalPrice = (product as OneBlockKeyProduct).price * keyQuantity;
+  } else if (isOneBlockExtra) {
+    const extra = product as OneBlockExtraProduct;
+    if (extra.isClaimBlock) {
+      originalPrice = currencyQuantity * (extra.ratePerUnit || 1);
+    } else if (extra.isPerPlayer) {
+      originalPrice = extra.price * playerCount;
+    } else {
+      originalPrice = extra.price;
+    }
   }
   
   // Apply site-wide discount first
@@ -766,7 +975,7 @@ const Checkout = () => {
                       <span className="text-8xl">{(product as TokenProduct).emoji}</span>
                     </motion.div>
                   </div>
-                ) : isCurrency ? (
+                ) : (isOneBlockProduct || isCurrency) ? (
                   <div className={`w-full aspect-video bg-gradient-to-br ${gradient} flex items-center justify-center`}>
                     <motion.div
                       animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
@@ -795,7 +1004,7 @@ const Checkout = () => {
                 <div className={`absolute top-4 left-4 px-4 py-2 rounded-full bg-gradient-to-r ${gradient} flex items-center gap-2`}>
                   <Icon className="w-4 h-4 text-white" />
                   <span className="text-sm font-display font-bold text-white">
-                    {isRank ? (product as RankProduct).tier.toUpperCase() : isToken ? (product as TokenProduct).rarity.toUpperCase() : isCurrency ? "CURRENCY" : (product as KeyProduct).isFree ? "FREE" : "PREMIUM"}
+                    {isRank ? (product as RankProduct).tier.toUpperCase() : isToken ? (product as TokenProduct).rarity.toUpperCase() : isOneBlockRank ? "ONE BLOCK" : isOneBlockKey ? (product as OneBlockKeyProduct).rarity.toUpperCase() : isOneBlockExtra ? "ONE BLOCK" : isCurrency ? "CURRENCY" : (product as KeyProduct).isFree ? "FREE" : "PREMIUM"}
                   </span>
                 </div>
               </div>
@@ -806,14 +1015,14 @@ const Checkout = () => {
               </h1>
               <p className="text-muted-foreground mb-6">{product.description}</p>
 
-              {/* Perks/Rewards - Only show for ranks and keys */}
-              {(isRank || isKey) && (
+              {/* Perks/Rewards - Only show for ranks, keys, and one block ranks */}
+              {(isRank || isKey || isOneBlockRank) && (
                 <div className="space-y-3 mb-6">
                   <h3 className="font-display text-sm uppercase tracking-wider text-muted-foreground">
-                    {isRank ? "Perks Included" : "Possible Rewards"}
+                    {(isRank || isOneBlockRank) ? "Perks Included" : "Possible Rewards"}
                   </h3>
                   <div className="grid grid-cols-2 gap-2">
-                    {(isRank ? (product as RankProduct).perks : (product as KeyProduct).rewards).map((item, index) => (
+                    {((isRank ? (product as RankProduct).perks : isOneBlockRank ? (product as OneBlockRankProduct).perks : (product as KeyProduct).rewards)).map((item, index) => (
                       <motion.div
                         key={item}
                         className="flex items-center gap-2 p-3 rounded-lg glass border border-border/50"
@@ -980,6 +1189,13 @@ const Checkout = () => {
                     </div>
                   )}
 
+                  {/* One Block badge */}
+                  {isOneBlockProduct && (
+                    <div className="text-center p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+                      <span className="text-sm font-display text-emerald-400">🧱 One Block</span>
+                    </div>
+                  )}
+
                   {isRank && (
                     <div>
                       <label className="block text-sm font-display text-muted-foreground mb-3">
@@ -1013,8 +1229,8 @@ const Checkout = () => {
                     </div>
                   )}
 
-                  {/* Quantity selector (keys only) */}
-                  {!isRank && !isToken && !isCurrency && !(product as KeyProduct).isFree && (
+                  {/* Quantity selector (spicy keys only) */}
+                  {isKey && !(product as KeyProduct).isFree && (
                     <div>
                       <label className="block text-sm font-display text-muted-foreground mb-3">
                         Select Quantity:
@@ -1040,6 +1256,100 @@ const Checkout = () => {
                               ) : (
                                 `₹${(product as KeyProduct).price * qty}`
                               )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* One Block Key quantity selector */}
+                  {isOneBlockKey && (
+                    <div>
+                      <label className="block text-sm font-display text-muted-foreground mb-3">
+                        Select Quantity:
+                      </label>
+                      <div className="grid grid-cols-5 gap-2">
+                        {[1, 2, 3, 4, 5].map((qty) => (
+                          <button
+                            key={qty}
+                            onClick={() => setKeyQuantity(qty)}
+                            className={`p-3 rounded-xl border-2 transition-all duration-300 ${
+                              keyQuantity === qty
+                                ? `border-transparent bg-gradient-to-r ${gradient} text-white`
+                                : "border-border/50 bg-card hover:border-primary/50"
+                            }`}
+                          >
+                            <div className="font-display font-bold text-lg">{qty}x</div>
+                            <div className={`text-xs ${keyQuantity === qty ? "text-white/80" : "text-muted-foreground"}`}>
+                              ₹{(product as OneBlockKeyProduct).price * qty}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* One Block Claim Blocks quantity */}
+                  {isOneBlockClaimBlock && (
+                    <div>
+                      <label className="block text-sm font-display text-muted-foreground mb-3">
+                        Enter Amount (blocks):
+                      </label>
+                      <div className="space-y-3">
+                        <Input
+                          type="number"
+                          min={100}
+                          value={currencyQuantity}
+                          onChange={(e) => setCurrencyQuantity(Math.max(parseInt(e.target.value) || 100, 100))}
+                          className="bg-background/50 border-border/50 text-lg font-display text-center"
+                        />
+                        <div className="grid grid-cols-4 gap-2">
+                          {[100, 500, 1000, 2000].map((amount) => (
+                            <button
+                              key={amount}
+                              onClick={() => setCurrencyQuantity(amount)}
+                              className={`p-2 rounded-lg border-2 transition-all duration-300 text-sm font-display ${
+                                currencyQuantity === amount
+                                  ? `border-transparent bg-gradient-to-r ${gradient} text-white`
+                                  : "border-border/50 bg-card hover:border-primary/50 text-muted-foreground"
+                              }`}
+                            >
+                              {amount}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="p-3 rounded-lg glass border border-border/50 text-center">
+                          <p className="text-xs text-muted-foreground mb-1">Rate: ₹1 = 1 Block</p>
+                          <p className="text-sm font-display">
+                            <span className="text-muted-foreground">You get: </span>
+                            <span className={accent}>{currencyQuantity} blocks</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* One Block Team Name player count */}
+                  {isOneBlockPerPlayer && (
+                    <div>
+                      <label className="block text-sm font-display text-muted-foreground mb-3">
+                        Number of Players:
+                      </label>
+                      <div className="grid grid-cols-5 gap-2">
+                        {[1, 2, 3, 4, 5].map((count) => (
+                          <button
+                            key={count}
+                            onClick={() => setPlayerCount(count)}
+                            className={`p-3 rounded-xl border-2 transition-all duration-300 ${
+                              playerCount === count
+                                ? `border-transparent bg-gradient-to-r ${gradient} text-white`
+                                : "border-border/50 bg-card hover:border-primary/50"
+                            }`}
+                          >
+                            <div className="font-display font-bold text-lg">{count}</div>
+                            <div className={`text-xs ${playerCount === count ? "text-white/80" : "text-muted-foreground"}`}>
+                              ₹{10 * count}
                             </div>
                           </button>
                         ))}
@@ -1302,6 +1612,29 @@ const Checkout = () => {
                             />
                             <p className="text-xs text-muted-foreground mt-1">
                               This will be displayed as your rank in-game! Max 15 characters.
+                            </p>
+                          </motion.div>
+                        )}
+
+                        {/* Team Name Field (One Block) */}
+                        {isOneBlockPerPlayer && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            className="overflow-hidden"
+                          >
+                            <label className="block text-sm font-display text-muted-foreground mb-2">
+                              Your Team Name *
+                            </label>
+                            <Input
+                              placeholder="Enter your team name"
+                              value={customRankName}
+                              onChange={(e) => setCustomRankName(e.target.value)}
+                              className="bg-background/50 border-border/50"
+                              maxLength={20}
+                            />
+                            <p className="text-xs text-muted-foreground mt-1">
+                              This will be your team's display name. Max 20 characters.
                             </p>
                           </motion.div>
                         )}
