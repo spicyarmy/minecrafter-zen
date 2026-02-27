@@ -54,20 +54,19 @@ const servers: ServerConfig[] = [
 
 const ServerSelect = () => {
   const navigate = useNavigate();
-  const [enabledServers, setEnabledServers] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [enabledServers, setEnabledServers] = useState<string[]>(["server_spicy_enabled"]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchSettings = async () => {
       const { data } = await supabase
         .from("store_settings")
         .select("key, value")
-        .in("key", ["server_spicy_enabled", "server_token_enabled", "server_oneblock_enabled"]);
+        .in("key", ["server_token_enabled", "server_oneblock_enabled"]);
       if (data) {
-        const enabled = data.filter(s => s.value === true).map(s => s.key);
-        setEnabledServers(enabled);
+        const extra = data.filter(s => s.value === true).map(s => s.key);
+        setEnabledServers(["server_spicy_enabled", ...extra]);
       }
-      setLoading(false);
     };
     fetchSettings();
   }, []);
