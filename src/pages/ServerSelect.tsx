@@ -120,25 +120,16 @@ const ServerSelect = () => {
           </motion.div>
 
           <motion.h1
-            className="text-6xl md:text-8xl lg:text-9xl font-display font-black mb-6 leading-tight"
+            className="text-5xl md:text-7xl lg:text-8xl font-display font-black mb-4 leading-tight"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            <span className="gradient-text-hero text-glow-primary">SPICY</span>
-            <br />
-            <motion.span
-              className="text-4xl md:text-5xl lg:text-6xl text-muted-foreground"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-            >
-              NETWORK
-            </motion.span>
+            <span className="gradient-text-hero text-glow-primary">SPICY NETWORK</span>
           </motion.h1>
 
           <motion.p
-            className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto"
+            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
@@ -166,64 +157,39 @@ const ServerSelect = () => {
             {visibleServers.map((server, i) => (
               <motion.div
                 key={server.key}
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + i * 0.15, duration: 0.6, type: "spring", stiffness: 100 }}
-                whileHover={{ y: -12, scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
+                transition={{ delay: 0.4 + i * 0.1, duration: 0.6 }}
+                whileHover={{ y: -10, scale: 1.02 }}
                 className="group cursor-pointer"
                 onClick={() => navigate(server.route)}
               >
                 <div
-                  className="relative rounded-3xl bg-card/80 backdrop-blur-sm border border-border/30 overflow-hidden transition-all duration-500 p-8 text-center h-full"
-                  style={{ boxShadow: `0 0 60px hsla(${server.hue}, 100%, 50%, 0.12)` }}
+                  className="relative rounded-3xl bg-card border border-border/50 overflow-hidden transition-all duration-500 p-8 text-center h-full"
+                  style={{ boxShadow: `0 0 60px hsla(${server.hue}, 100%, 50%, 0.15)` }}
                 >
-                  {/* Hover glow */}
                   <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-                    style={{ boxShadow: `inset 0 0 100px hsla(${server.hue}, 100%, 50%, 0.08)` }}
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                    style={{ boxShadow: `inset 0 0 80px hsla(${server.hue}, 100%, 50%, 0.1)` }}
                   />
-
-                  {/* Shimmer effect */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none overflow-hidden">
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        background: `linear-gradient(105deg, transparent 40%, hsla(${server.hue}, 100%, 70%, 0.06) 45%, hsla(${server.hue}, 100%, 70%, 0.1) 50%, hsla(${server.hue}, 100%, 70%, 0.06) 55%, transparent 60%)`,
-                        animation: "shimmer 2s infinite",
-                      }}
-                    />
-                  </div>
-
-                  {/* Icon */}
-                  <motion.div
-                    className="w-28 h-28 mx-auto mb-6 rounded-2xl flex items-center justify-center overflow-hidden"
-                    style={{ background: `linear-gradient(135deg, hsla(${server.hue}, 100%, 50%, 0.15), hsla(${server.hue}, 100%, 50%, 0.05))` }}
-                    whileHover={{ rotate: [0, -5, 5, 0] }}
-                    transition={{ duration: 0.5 }}
+                  <div className={`w-24 h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center overflow-hidden ${server.logo ? "" : "bg-gradient-to-br"}`}
+                    style={server.logo ? {} : { background: `linear-gradient(135deg, hsla(${server.hue}, 100%, 50%, 0.2), hsla(${server.hue}, 80%, 40%, 0.2))` }}
                   >
                     {server.logo ? (
                       <img src={server.logo} alt={server.name} className="w-full h-full object-cover" />
                     ) : (
                       server.icon
                     )}
-                  </motion.div>
-
+                  </div>
                   <h2 className={`font-display text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r ${server.gradient} bg-clip-text text-transparent`}>
                     {server.name}
                   </h2>
-                  <p className="text-muted-foreground mb-8 text-sm">
+                  <p className="text-muted-foreground mb-6">
                     {server.description}
                   </p>
-
-                  <motion.div
-                    className={`inline-block px-8 py-3.5 rounded-full bg-gradient-to-r ${server.gradient} font-display font-bold text-white text-sm tracking-wider`}
-                    whileHover={{ boxShadow: `0 0 40px hsla(${server.hue}, 100%, 50%, 0.6)` }}
-                  >
+                  <div className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${server.gradient} font-display font-bold text-white transition-all group-hover:shadow-[0_0_30px_hsla(${server.hue},100%,50%,0.5)]`}>
                     Enter Store →
-                  </motion.div>
-
-                  {/* Animated border on hover */}
+                  </div>
                   <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                     <div className={`absolute inset-0 rounded-3xl border-2 border-transparent bg-gradient-to-r ${server.gradient} [mask:linear-gradient(#fff_0_0)_padding-box,linear-gradient(#fff_0_0)] [mask-composite:exclude]`} />
                   </div>
