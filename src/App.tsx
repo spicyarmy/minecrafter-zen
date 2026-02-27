@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import TokenStore from "./pages/TokenStore";
 import OneBlockStore from "./pages/OneBlockStore";
 import Checkout from "./pages/Checkout";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/token" element={<TokenStore />} />
           <Route path="/oneblock" element={<OneBlockStore />} />
           <Route path="/checkout/:productId" element={<Checkout />} />
+          <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
