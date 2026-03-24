@@ -17,8 +17,8 @@ const ranks = [
     description: "Start your journey with the PRO status. Includes essential commands.",
     kitName: "PRO Kit",
     originalPrice: "₹50",
-    salePrice: "₹30",
-    buyLink: "https://spicysmp.dpdns.org/pro.html",
+    salePrice: "₹40",
+    buyLink: "",
     image: proRank,
     tier: "pro" as const,
   },
@@ -26,9 +26,9 @@ const ranks = [
     name: "ELITE RANK",
     description: "Step up your game. Comes with colored chat and more homes.",
     kitName: "ELITE Kit",
-    originalPrice: "₹75",
-    salePrice: "₹55",
-    buyLink: "https://spicysmp.dpdns.org/elite.html",
+    originalPrice: "₹70",
+    salePrice: "₹60",
+    buyLink: "",
     image: eliteRank,
     tier: "elite" as const,
   },
@@ -36,9 +36,9 @@ const ranks = [
     name: "LEGEND RANK",
     description: "Become a legend. Unlocks priority queue access.",
     kitName: "LEGEND Kit",
-    originalPrice: "₹100",
-    salePrice: "₹80",
-    buyLink: "https://spicysmp.dpdns.org/legend.html",
+    originalPrice: "₹110",
+    salePrice: "₹90",
+    buyLink: "",
     image: legendRank,
     tier: "legend" as const,
   },
@@ -47,8 +47,8 @@ const ranks = [
     description: "Unlock the power of eternity. Enjoy flight in lobby and unique titles.",
     kitName: "IMMORTAL Kit",
     originalPrice: "₹150",
-    salePrice: "₹110",
-    buyLink: "https://spicysmp.dpdns.org/immortal.html",
+    salePrice: "₹120",
+    buyLink: "",
     image: immortalRank,
     tier: "immortal" as const,
   },
@@ -57,8 +57,8 @@ const ranks = [
     description: "Unleash your true potential! Gain access to special combat perks.",
     kitName: "DEADLIEST Kit",
     originalPrice: "₹200",
-    salePrice: "₹150",
-    buyLink: "https://spicysmp.dpdns.org/deadliest.html",
+    salePrice: "₹170",
+    buyLink: "",
     image: deadliestRank,
     tier: "deadliest" as const,
   },
@@ -66,9 +66,9 @@ const ranks = [
     name: "SUPREME RANK",
     description: "The ultimate status. Dominate with maximum claim blocks.",
     kitName: "SUPREME Kit",
-    originalPrice: "₹280",
-    salePrice: "₹200",
-    buyLink: "https://spicysmp.dpdns.org/supreme.html",
+    originalPrice: "₹250",
+    salePrice: "₹220",
+    buyLink: "",
     image: supremeRank,
     tier: "supreme" as const,
   },
@@ -76,9 +76,9 @@ const ranks = [
     name: "SPICY RANK",
     description: "The ultimate signature rank! All fire perks and legendary items.",
     kitName: "SPICY Kit",
-    originalPrice: "₹350",
-    salePrice: "₹250",
-    buyLink: "https://spicysmp.dpdns.org/spicy.html",
+    originalPrice: "₹320",
+    salePrice: "₹280",
+    buyLink: "",
     image: spicyRank,
     tier: "spicy" as const,
   },
@@ -86,15 +86,19 @@ const ranks = [
     name: "CUSTOM RANK",
     description: "Create your own identity! Choose your own rank name with SPICY Kit perks + 2000 Claim Blocks.",
     kitName: "CUSTOM Kit",
-    originalPrice: "₹350",
-    salePrice: "₹300",
-    buyLink: "https://spicysmp.dpdns.org/custom.html",
+    originalPrice: "₹400",
+    salePrice: "₹340",
+    buyLink: "",
     image: customRank,
     tier: "custom" as const,
   },
 ];
 
-const RanksSection = () => {
+interface RanksSectionProps {
+  serverName?: string;
+}
+
+const RanksSection = ({ serverName = "GEM SMP" }: RanksSectionProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredRanks = ranks.filter((rank) =>
@@ -125,11 +129,10 @@ const RanksSection = () => {
             <span className="gradient-text">Select Your Rank</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Unlock exclusive perks, kits, and abilities on SPICYSMP
+            Unlock exclusive perks, kits, and abilities on {serverName}
           </p>
         </motion.div>
 
-        {/* Search bar */}
         <motion.div
           className="max-w-md mx-auto mb-10"
           initial={{ opacity: 0, y: 20 }}
@@ -157,7 +160,6 @@ const RanksSection = () => {
           </div>
         </motion.div>
 
-        {/* Results count */}
         {searchQuery && (
           <motion.p
             className="text-center text-sm text-muted-foreground mb-6"
@@ -174,7 +176,6 @@ const RanksSection = () => {
           ))}
         </div>
 
-        {/* No results message */}
         {filteredRanks.length === 0 && (
           <motion.div
             className="text-center py-12"

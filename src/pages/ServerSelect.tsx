@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Flame, Coins, Box, Sparkles } from "lucide-react";
+import { Gem, Sword, Sparkles } from "lucide-react";
 import ParticleBackground from "@/components/ParticleBackground";
-import tokenLogo from "@/assets/token-logo.png";
-import oneblockLogo from "@/assets/oneblock-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 
 interface ServerConfig {
@@ -14,47 +12,36 @@ interface ServerConfig {
   description: string;
   gradient: string;
   hue: number;
-  icon?: React.ReactNode;
-  logo?: string;
+  icon: React.ReactNode;
   settingKey: string;
 }
 
 const servers: ServerConfig[] = [
   {
-    key: "spicy",
-    route: "/spicy",
-    name: "SPICY SMP",
+    key: "gem",
+    route: "/gem",
+    name: "GEM SMP",
     description: "Ranks, Survival Keys, Lifesteal Keys, Coins & more",
-    gradient: "from-orange-500 to-red-600",
-    hue: 20,
-    icon: <Flame className="w-12 h-12 text-orange-400" />,
-    settingKey: "server_spicy_enabled",
-  },
-  {
-    key: "token",
-    route: "/token",
-    name: "TOKEN SMP",
-    description: "Ranks, Mob Tokens & more",
-    gradient: "from-yellow-500 to-amber-600",
-    hue: 45,
-    logo: tokenLogo,
-    settingKey: "server_token_enabled",
-  },
-  {
-    key: "oneblock",
-    route: "/oneblock",
-    name: "ONE BLOCK",
-    description: "Ranks, Keys, Team Names, Keep Inventory & more",
-    gradient: "from-emerald-400 to-green-600",
+    gradient: "from-emerald-400 to-cyan-500",
     hue: 160,
-    logo: oneblockLogo,
-    settingKey: "server_oneblock_enabled",
+    icon: <Gem className="w-12 h-12 text-emerald-400" />,
+    settingKey: "server_gem_enabled",
+  },
+  {
+    key: "lifesteal",
+    route: "/lifesteal",
+    name: "LIFESTEAL",
+    description: "Ranks, PvP Combat & more",
+    gradient: "from-red-500 to-rose-600",
+    hue: 0,
+    icon: <Sword className="w-12 h-12 text-red-400" />,
+    settingKey: "server_lifesteal_enabled",
   },
 ];
 
 const ServerSelect = () => {
   const navigate = useNavigate();
-  const [enabledServers, setEnabledServers] = useState<string[]>(["server_spicy_enabled"]);
+  const [enabledServers, setEnabledServers] = useState<string[]>(["server_gem_enabled"]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -62,10 +49,10 @@ const ServerSelect = () => {
       const { data } = await supabase
         .from("store_settings")
         .select("key, value")
-        .in("key", ["server_token_enabled", "server_oneblock_enabled"]);
+        .in("key", ["server_lifesteal_enabled"]);
       if (data) {
         const extra = data.filter(s => s.value === true).map(s => s.key);
-        setEnabledServers(["server_spicy_enabled", ...extra]);
+        setEnabledServers(["server_gem_enabled", ...extra]);
       }
     };
     fetchSettings();
@@ -77,30 +64,22 @@ const ServerSelect = () => {
     <div className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center">
       <ParticleBackground />
 
-      {/* Animated gradient orbs */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <motion.div
           className="absolute w-[600px] h-[600px] rounded-full opacity-[0.07]"
-          style={{ background: "radial-gradient(circle, hsl(320 100% 50%), transparent 70%)", top: "-200px", right: "-200px" }}
+          style={{ background: "radial-gradient(circle, hsl(160 100% 50%), transparent 70%)", top: "-200px", right: "-200px" }}
           animate={{ scale: [1, 1.2, 1], x: [0, 30, 0], y: [0, -20, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
           className="absolute w-[500px] h-[500px] rounded-full opacity-[0.05]"
-          style={{ background: "radial-gradient(circle, hsl(45 100% 50%), transparent 70%)", bottom: "-150px", left: "-150px" }}
+          style={{ background: "radial-gradient(circle, hsl(0 100% 50%), transparent 70%)", bottom: "-150px", left: "-150px" }}
           animate={{ scale: [1, 1.3, 1], x: [0, -20, 0], y: [0, 30, 0] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute w-[400px] h-[400px] rounded-full opacity-[0.04]"
-          style={{ background: "radial-gradient(circle, hsl(185 100% 50%), transparent 70%)", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
-          animate={{ scale: [1, 1.4, 1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* Header */}
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: -30 }}
@@ -137,7 +116,6 @@ const ServerSelect = () => {
           </motion.p>
         </motion.div>
 
-        {/* Server Cards */}
         {loading ? (
           <div className="text-center text-muted-foreground font-display tracking-wider animate-pulse">
             Loading...
@@ -152,7 +130,7 @@ const ServerSelect = () => {
             <p className="text-sm mt-2">Check back later!</p>
           </motion.div>
         ) : (
-          <div className={`grid grid-cols-1 ${visibleServers.length === 1 ? "max-w-lg" : visibleServers.length === 2 ? "md:grid-cols-2 max-w-4xl" : "md:grid-cols-3 max-w-6xl"} gap-6 mx-auto`}>
+          <div className={`grid grid-cols-1 ${visibleServers.length === 1 ? "max-w-lg" : "md:grid-cols-2 max-w-4xl"} gap-6 mx-auto`}>
             {visibleServers.map((server, i) => (
               <motion.div
                 key={server.key}
@@ -171,14 +149,10 @@ const ServerSelect = () => {
                     className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                     style={{ boxShadow: `inset 0 0 80px hsla(${server.hue}, 100%, 50%, 0.1)` }}
                   />
-                  <div className={`w-24 h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center overflow-hidden ${server.logo ? "" : "bg-gradient-to-br"}`}
-                    style={server.logo ? {} : { background: `linear-gradient(135deg, hsla(${server.hue}, 100%, 50%, 0.2), hsla(${server.hue}, 80%, 40%, 0.2))` }}
+                  <div className="w-24 h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center"
+                    style={{ background: `linear-gradient(135deg, hsla(${server.hue}, 100%, 50%, 0.2), hsla(${server.hue}, 80%, 40%, 0.2))` }}
                   >
-                    {server.logo ? (
-                      <img src={server.logo} alt={server.name} className="w-full h-full object-cover" />
-                    ) : (
-                      server.icon
-                    )}
+                    {server.icon}
                   </div>
                   <h2 className={`font-display text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r ${server.gradient} bg-clip-text text-transparent`}>
                     {server.name}
@@ -198,7 +172,6 @@ const ServerSelect = () => {
           </div>
         )}
 
-        {/* Discord link */}
         <motion.div
           className="text-center mt-16"
           initial={{ opacity: 0 }}

@@ -10,12 +10,10 @@ const Footer = () => {
 
   return (
     <footer id="contact" className="relative py-16 border-t border-border/50">
-      {/* Background glow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/10 blur-[150px] rounded-full" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center text-center">
-          {/* Logo */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -24,10 +22,10 @@ const Footer = () => {
           >
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <span className="text-2xl">🔥</span>
+                <span className="text-2xl">💎</span>
               </div>
               <span className="font-display text-2xl font-bold gradient-text">
-                SPICY SMP
+                GEM SMP
               </span>
             </div>
             <p className="text-muted-foreground max-w-md">
@@ -35,7 +33,6 @@ const Footer = () => {
             </p>
           </motion.div>
 
-          {/* Links */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -57,7 +54,6 @@ const Footer = () => {
             ))}
           </motion.div>
 
-          {/* Copyright */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
