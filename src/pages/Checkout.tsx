@@ -893,11 +893,8 @@ const Checkout = () => {
   const glow = tokenConfig?.glow || obRankConfig?.glow || obKeyConfig?.glow || obExtraConfig?.glow || config?.glow || (isKey && (product as KeyProduct).isFree ? "0 0 80px hsla(185, 100%, 50%, 0.3)" : "0 0 80px hsla(45, 100%, 50%, 0.3)");
   const accent = tokenConfig?.accent || obRankConfig?.accent || obKeyConfig?.accent || obExtraConfig?.accent || config?.accent || (isKey && (product as KeyProduct).isFree ? "text-accent" : "text-secondary");
 
-  // Discount configuration - 20% off, only for today
-  const today = new Date();
-  const discountEndDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59);
-  const isDiscountActive = new Date() <= discountEndDate;
-  const siteDiscountPercent = 20;
+  // Discount from admin panel
+  const isDiscountActive = siteDiscountPercent > 0;
 
   // Calculate prices based on product type
   let originalPrice = 0;
