@@ -779,7 +779,7 @@ const Checkout = () => {
         { name: "⏱️ Duration", value: duration, inline: true },
         { name: "🎯 Minecraft Username", value: isOneBlockPerPlayer ? teamPlayerNames.join(", ") : minecraftUsername, inline: true },
         { name: "🔢 Transfer ID", value: transferId, inline: true },
-        { name: "🖥️ Server", value: isOneBlockProduct ? "One Block" : isTokenProduct ? "Token SMP" : isSurvivalOnly ? "Survival" : isLifestealOnly ? "Lifesteal" : selectedServer.charAt(0).toUpperCase() + selectedServer.slice(1), inline: true },
+        { name: "🖥️ Server", value: isOneBlockProduct ? "One Block" : isTokenProduct ? "Token SMP" : isLifestealOnly ? "Lifesteal" : selectedServer === "gem" ? "Gem SMP" : "Lifesteal", inline: true },
       ];
       
       // Add discount info
@@ -954,7 +954,7 @@ const Checkout = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
               <span className="text-lg">🔥</span>
             </div>
-            <span className="font-display text-lg font-bold gradient-text">SPICYSMP</span>
+            <span className="font-display text-lg font-bold gradient-text">SPICY NETWORK</span>
           </Link>
 
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
@@ -1214,17 +1214,17 @@ const Checkout = () => {
                         Choose Server:
                       </label>
                       <div className="grid grid-cols-2 gap-3">
-                        {(["survival", "lifesteal"] as const).map((server) => (
+                        {(["gem", "lifesteal"] as const).map((server) => (
                           <button
                             key={server}
                             onClick={() => setSelectedServer(server)}
                             className={`p-4 rounded-xl border-2 transition-all duration-300 ${
                               selectedServer === server
-                                ? `border-transparent bg-gradient-to-r ${server === "survival" ? "from-green-500 to-emerald-600" : "from-red-500 to-rose-600"} text-white`
+                                ? `border-transparent bg-gradient-to-r ${server === "gem" ? "from-emerald-500 to-cyan-600" : "from-red-500 to-rose-600"} text-white`
                                 : "border-border/50 bg-card hover:border-primary/50"
                             }`}
                           >
-                            <div className="font-display font-bold capitalize">{server === "survival" ? "⛏️ Survival" : "❤️ Lifesteal"}</div>
+                            <div className="font-display font-bold capitalize">{server === "gem" ? "💎 Gem SMP" : "⚔️ Lifesteal"}</div>
                           </button>
                         ))}
                       </div>
@@ -1836,7 +1836,7 @@ const Checkout = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 py-6 relative z-10">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} SPICYSMP. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} SPICY NETWORK. All rights reserved.</p>
           <p className="mt-1 text-xs">Server IP: play.spicynet.fun</p>
         </div>
       </footer>
