@@ -764,7 +764,7 @@ const Checkout = () => {
       
       // Apply site discount if active
       if (isDiscountActive) {
-        price = Math.round(price * 0.8);
+        price = Math.round(price * (1 - siteDiscountPercent / 100));
       }
       
       // Apply coupon discount if present
@@ -1277,10 +1277,10 @@ const Checkout = () => {
                           >
                             <div className="font-display font-bold">{duration.days} Days</div>
                             <div className={selectedDuration === index ? "text-white/80" : "text-muted-foreground"}>
-                              {isDiscountActive ? (
+                            {isDiscountActive ? (
                                 <span>
                                   <span className="line-through text-xs mr-1">₹{duration.price}</span>
-                                  <span className="text-green-400">₹{Math.round(duration.price * 0.9)}</span>
+                                  <span className="text-green-400">₹{Math.round(duration.price * (1 - siteDiscountPercent / 100))}</span>
                                 </span>
                               ) : (
                                 `₹${duration.price}`
@@ -1314,7 +1314,7 @@ const Checkout = () => {
                               {isDiscountActive ? (
                                 <span>
                                   <span className="line-through mr-1">₹{(product as KeyProduct).price * qty}</span>
-                                  <span className="text-green-400">₹{Math.round((product as KeyProduct).price * qty * 0.9)}</span>
+                                  <span className="text-green-400">₹{Math.round((product as KeyProduct).price * qty * (1 - siteDiscountPercent / 100))}</span>
                                 </span>
                               ) : (
                                 `₹${(product as KeyProduct).price * qty}`
