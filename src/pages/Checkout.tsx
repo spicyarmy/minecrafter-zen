@@ -784,7 +784,7 @@ const Checkout = () => {
       
       // Add discount info
       if (isDiscountActive) {
-        embedFields.push({ name: "🔥 Site Discount", value: "20% OFF - Today Only", inline: true });
+        embedFields.push({ name: "🔥 Site Discount", value: `${siteDiscountPercent}% OFF`, inline: true });
       }
       
       // Add coupon info if applied
@@ -1194,7 +1194,7 @@ const Checkout = () => {
                   >
                     <Sparkles className="w-4 h-4 text-white" />
                     <span className="text-white font-display text-sm font-bold">
-                      🔥 20% OFF - Only for Today!
+                      🔥 {siteDiscountPercent}% OFF Sale!
                     </span>
                     <Sparkles className="w-4 h-4 text-white" />
                   </motion.div>
@@ -1583,7 +1583,7 @@ const Checkout = () => {
                               animate={{ opacity: 1 }}
                               className="inline-block px-2 py-1 bg-primary/20 text-primary text-xs font-display font-bold rounded mr-1"
                             >
-                              🎉 10% Site Discount
+                              🎉 {siteDiscountPercent}% Site Discount
                             </motion.div>
                           )}
                           {appliedCoupon && (
