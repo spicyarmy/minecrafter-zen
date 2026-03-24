@@ -112,12 +112,11 @@ const products: Record<string, Product> = {
     image: proRank,
     tier: "pro",
     durations: [
-      { days: 30, price: 30 },
-      { days: 60, price: 55 },
+      { days: 30, price: 40 },
     ],
     perks: ["/Kit", "/Fly", "/Withdraw", "2 Home Slots", "2 Auction Slots", "Priority Support"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Diamond Shovel", "Water Bucket", "Iron Block x2", "Diamond Helmet (Protection IV, Unbreaking III, Mending)", "Diamond Chestplate (Protection IV, Unbreaking III, Mending)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
-    qrLink: "https://spicysmp.dpdns.org/pro.html",
+    qrLink: "",
   },
   elite: {
     type: "rank",
@@ -127,12 +126,11 @@ const products: Record<string, Product> = {
     image: eliteRank,
     tier: "elite",
     durations: [
-      { days: 30, price: 55 },
-      { days: 60, price: 100 },
+      { days: 30, price: 60 },
     ],
     perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "4 Home Slots", "4 Auction Slots"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Diamond Shovel", "Diamond Hoe", "Milk Bucket", "Iron Block", "Bed", "Diamond Helmet (Protection V, Unbreaking V, Mending)", "Diamond Chestplate (Protection V, Unbreaking V, Mending)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
-    qrLink: "https://spicysmp.dpdns.org/elite.html",
+    qrLink: "",
   },
   legend: {
     type: "rank",
@@ -142,12 +140,11 @@ const products: Record<string, Product> = {
     image: legendRank,
     tier: "legend",
     durations: [
-      { days: 30, price: 80 },
-      { days: 60, price: 150 },
+      { days: 30, price: 90 },
     ],
     perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "6 Home Slots", "6 Auction Slots"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Golden Apple x32", "Golden Block x2", "Ladder", "Diamond Helmet (Protection VI, Thorns III, Unbreaking VI, Mending)", "Diamond Chestplate (Protection VI, Thorns III, Unbreaking VI, Mending)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
-    qrLink: "https://spicysmp.dpdns.org/legend.html",
+    qrLink: "",
   },
   immortal: {
     type: "rank",
@@ -157,12 +154,11 @@ const products: Record<string, Product> = {
     image: immortalRank,
     tier: "immortal",
     durations: [
-      { days: 30, price: 110 },
-      { days: 60, price: 200 },
+      { days: 30, price: 120 },
     ],
     perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "8 Home Slots", "8 Auction Slots"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Slime Block x2", "Ladder", "Diamond Helmet (Protection VII, Unbreaking VII, Mending VII)", "Diamond Chestplate (Protection VII, Unbreaking VII, Mending VII)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
-    qrLink: "https://spicysmp.dpdns.org/immortal.html",
+    qrLink: "",
   },
   deadliest: {
     type: "rank",
@@ -172,12 +168,11 @@ const products: Record<string, Product> = {
     image: deadliestRank,
     tier: "deadliest",
     durations: [
-      { days: 30, price: 150 },
-      { days: 60, price: 280 },
+      { days: 30, price: 170 },
     ],
     perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "10 Home Slots", "10 Auction Slots"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Shulker Box", "Potion x4", "Diamond Helmet (Bolt Armor Trim, Protection VIII, Fire Protection VIII, Respiration VIII, Unbreaking VIII, Mending VIII)", "Diamond Chestplate (Bolt Armor Trim, Redstone Material, Protection VIII, Fire Protection VIII, Respiration VIII, Unbreaking VIII, Mending VIII)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
-    qrLink: "https://spicysmp.dpdns.org/deadliest.html",
+    qrLink: "",
   },
   supreme: {
     type: "rank",
@@ -187,12 +182,11 @@ const products: Record<string, Product> = {
     image: supremeRank,
     tier: "supreme",
     durations: [
-      { days: 30, price: 200 },
-      { days: 60, price: 380 },
+      { days: 30, price: 220 },
     ],
     perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "15 Home Slots", "15 Auction Slots"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Diamond Shovel", "Diamond Hoe", "Potion", "Shulker Box", "Bed", "Ladder", "Diamond Helmet (Silence Armor Trim, Amethyst Material, Protection IX, Fire Protection IX, Unbreaking IX, Mending IX)", "Diamond Chestplate (Silence Armor Trim, Amethyst Material, Protection IX, Fire Protection IX, Unbreaking IX, Mending IX)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
-    qrLink: "https://spicysmp.dpdns.org/supreme.html",
+    qrLink: "",
   },
   spicy: {
     type: "rank",
@@ -202,12 +196,11 @@ const products: Record<string, Product> = {
     image: spicyRank,
     tier: "spicy",
     durations: [
-      { days: 30, price: 250 },
-      { days: 60, price: 450 },
+      { days: 30, price: 280 },
     ],
     perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "Unlimited Home Slots", "Unlimited Auction Slots", "VIP Priority"],
     kitItems: ["Diamond Pickaxe", "Diamond Shovel", "Diamond Axe", "Diamond Hoe", "Fire Resistance Potion", "Milk Bucket", "Bed", "Red Wool", "Diamond Helmet (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Chestplate (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
-    qrLink: "https://spicysmp.dpdns.org/spicy.html",
+    qrLink: "",
   },
   custom: {
     type: "rank",
@@ -218,12 +211,11 @@ const products: Record<string, Product> = {
     tier: "custom",
     isCustomRank: true,
     durations: [
-      { days: 30, price: 300 },
-      { days: 60, price: 550 },
+      { days: 30, price: 340 },
     ],
     perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "Unlimited Home Slots", "Unlimited Auction Slots", "VIP Priority", "2000 Claim Blocks", "Custom Rank Name"],
     kitItems: ["Diamond Pickaxe", "Diamond Shovel", "Diamond Axe", "Diamond Hoe", "Fire Resistance Potion", "Milk Bucket", "Bed", "Red Wool", "Diamond Helmet (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Chestplate (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
-    qrLink: "https://spicysmp.dpdns.org/custom.html",
+    qrLink: "",
   },
   // Keys - ordered by price (ascending)
   "vote-key": {
@@ -556,7 +548,7 @@ const Checkout = () => {
   const [currencyQuantity, setCurrencyQuantity] = useState(100);
   const [playerCount, setPlayerCount] = useState(1);
   const [showKitItems, setShowKitItems] = useState(false);
-  const [selectedServer, setSelectedServer] = useState<"survival" | "lifesteal">("survival");
+  const [selectedServer, setSelectedServer] = useState<"gem" | "lifesteal">("gem");
   
   // Form states
   const [minecraftUsername, setMinecraftUsername] = useState("");
@@ -574,6 +566,9 @@ const Checkout = () => {
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount_percent: number } | null>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
+  
+  // Site discount from admin
+  const [siteDiscountPercent, setSiteDiscountPercent] = useState(0);
 
   const product = productId ? products[productId] : null;
   
@@ -589,12 +584,12 @@ const Checkout = () => {
   const isOneBlockClaimBlock = isOneBlockExtra && (product as OneBlockExtraProduct).isClaimBlock;
   const isOneBlockPerPlayer = isOneBlockExtra && (product as OneBlockExtraProduct).isPerPlayer;
   
-  // Spicy & Custom ranks are Survival only, lifesteal keys are Lifesteal only, tokens are Token SMP only
+  // Lifesteal keys are Lifesteal only, tokens are hidden
   const lifestealKeyIds = ["core-key", "flux-key", "aura-key"];
-  const isSurvivalOnly = (isRank && ((product as RankProduct).tier === "spicy" || (product as RankProduct).tier === "custom"));
+  const isSurvivalOnly = false;
   const isLifestealOnly = productId ? lifestealKeyIds.includes(productId) : false;
   const isTokenProduct = isToken || (productId?.startsWith("token-") ?? false);
-  const showServerSelector = !isSurvivalOnly && !isLifestealOnly && !isCurrency && !isKey && !isTokenProduct && !isOneBlockProduct;
+  const showServerSelector = !isLifestealOnly && !isCurrency && !isKey && !isTokenProduct && !isOneBlockProduct;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -604,6 +599,16 @@ const Checkout = () => {
     if (isOneBlockClaimBlock) {
       setCurrencyQuantity((product as OneBlockExtraProduct).minQuantity || 100);
     }
+    // Fetch site discount from admin settings
+    const fetchDiscount = async () => {
+      const { data } = await supabase
+        .from("store_settings")
+        .select("value")
+        .eq("key", "site_discount_percent")
+        .maybeSingle();
+      if (data) setSiteDiscountPercent(Number(data.value) || 0);
+    };
+    fetchDiscount();
   }, [product]);
 
   // Sync teamPlayerNames array with playerCount
