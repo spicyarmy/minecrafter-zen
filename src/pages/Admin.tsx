@@ -252,8 +252,8 @@ const Admin = () => {
               <div className="space-y-4">
                 <h2 className="font-display text-xl font-bold mb-6">Server Visibility</h2>
                 {[
-                  { key: "server_spicy_enabled", name: "SPICY SMP", color: "from-orange-500 to-red-600" },
-                  { key: "server_token_enabled", name: "TOKEN SMP", color: "from-yellow-500 to-amber-600" },
+                  { key: "server_gem_enabled", name: "GEM SMP", color: "from-emerald-400 to-cyan-500" },
+                  { key: "server_lifesteal_enabled", name: "LIFESTEAL", color: "from-red-500 to-rose-600" },
                   { key: "server_oneblock_enabled", name: "ONE BLOCK", color: "from-emerald-400 to-green-600" },
                 ].map(server => (
                   <div key={server.key} className="glass rounded-2xl p-6 flex items-center justify-between">
