@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Zap, Shield, Headphones, Play } from "lucide-react";
+import { ArrowRight, Zap, Shield, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import minecraftHero from "@/assets/minecraft-hero.png";
 
@@ -12,39 +12,30 @@ const HeroSection = () => {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Background image */}
       <div className="absolute inset-0 z-0">
         <img
           src={minecraftHero}
-          alt="SPICYSMP Minecraft Server"
+          alt="GEM SMP Minecraft Server"
           className="w-full h-full object-cover opacity-40"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-background" />
       </div>
       
-      {/* Animated background elements */}
       <div className="absolute inset-0 z-5">
         <motion.div
           className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-primary/20 blur-[100px]"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.5, 0.3],
-          }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
           transition={{ duration: 8, repeat: Infinity }}
         />
         <motion.div
           className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-secondary/20 blur-[100px]"
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.5, 0.3, 0.5],
-          }}
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.5, 0.3, 0.5] }}
           transition={{ duration: 8, repeat: Infinity }}
         />
       </div>
 
       <div className="container mx-auto px-4 relative z-20">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Main Title */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -56,11 +47,11 @@ const HeroSection = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
             >
-              🎮 PREMIUM MINECRAFT STORE
+              💎 PREMIUM MINECRAFT STORE
             </motion.span>
             
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-black mb-6 leading-tight">
-              <span className="gradient-text-hero text-glow-primary">SPICY SMP</span>
+              <span className="gradient-text-hero text-glow-primary">GEM SMP</span>
             </h1>
             
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
@@ -68,7 +59,6 @@ const HeroSection = () => {
             </p>
           </motion.div>
 
-          {/* CTA Buttons */}
           <motion.div
             className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
             initial={{ opacity: 0, y: 20 }}
@@ -88,7 +78,6 @@ const HeroSection = () => {
             </Button>
           </motion.div>
 
-          {/* Feature badges */}
           <motion.div
             className="flex flex-wrap justify-center gap-4"
             initial={{ opacity: 0 }}
@@ -111,7 +100,6 @@ const HeroSection = () => {
           </motion.div>
         </div>
 
-        {/* Scroll indicator */}
         <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
           animate={{ y: [0, 10, 0] }}

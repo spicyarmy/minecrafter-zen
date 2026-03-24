@@ -5,8 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ServerSelect from "./pages/ServerSelect";
 import Index from "./pages/Index";
-import TokenStore from "./pages/TokenStore";
-import OneBlockStore from "./pages/OneBlockStore";
+import LifestealStore from "./pages/LifestealStore";
 import Checkout from "./pages/Checkout";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
@@ -21,9 +20,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ServerSelect />} />
-          <Route path="/spicy" element={<Index />} />
-          <Route path="/token" element={<TokenStore />} />
-          <Route path="/oneblock" element={<OneBlockStore />} />
+          <Route path="/gem" element={<Index />} />
+          <Route path="/lifesteal" element={<LifestealStore />} />
           <Route path="/checkout/:productId" element={<Checkout />} />
           <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
