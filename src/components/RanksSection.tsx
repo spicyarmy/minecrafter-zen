@@ -173,7 +173,7 @@ const RanksSection = ({ serverName = "GEM SMP", serverParam }: RanksSectionProps
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredRanks.map((rank, index) => (
-            <RankCard key={rank.name} {...rank} index={index} />
+            <RankCard key={rank.name} {...rank} index={index} serverParam={serverParam} />
           ))}
         </div>
 
