@@ -591,7 +591,7 @@ const Checkout = () => {
   const isSurvivalOnly = false;
   const isLifestealOnly = productId ? lifestealKeyIds.includes(productId) : false;
   const isTokenProduct = isToken || (productId?.startsWith("token-") ?? false);
-  const showServerSelector = !isLifestealOnly && !isCurrency && !isKey && !isTokenProduct && !isOneBlockProduct;
+  const showServerSelector = !serverFromUrl && !isLifestealOnly && !isCurrency && !isKey && !isTokenProduct && !isOneBlockProduct;
 
   useEffect(() => {
     window.scrollTo(0, 0);
