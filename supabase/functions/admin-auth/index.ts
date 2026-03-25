@@ -86,6 +86,59 @@ Deno.serve(async (req) => {
         break;
       }
 
+      // Product CRUD
+      case "get_products": {
+        const { data: products, error } = await supabase
+          .from("products")
+          .select("*")
+          .order("server", { ascending: true })
+          .order("category", { ascending: true })
+          .order("sort_order", { ascending: true });
+        if (error) throw error;
+        result = { products };
+        break;
+      }
+
+      case "create_product": {
+        const { product_key, category, server, name, description, price, original_price, sort_order, metadata } = data;
+        const { error } = await supabase.from("products").insert({
+          product_key,
+          category,
+          server,
+          name,
+          description: description || "",
+          price: Number(price),
+          original_price: Number(original_price || price),
+          sort_order: sort_order || 0,
+          metadata: metadata || {},
+        });
+        if (error) throw error;
+        result = { success: true };
+        break;
+      }
+
+      case "update_product": {
+        const { id, ...updates } = data;
+        if (updates.price !== undefined) updates.price = Number(updates.price);
+        if (updates.original_price !== undefined) updates.original_price = Number(updates.original_price);
+        updates.updated_at = new Date().toISOString();
+        const { error } = await supabase
+          .from("products")
+          .update(updates)
+          .eq("id", id);
+        if (error) throw error;
+        result = { success: true };
+        break;
+      }
+
+      case "delete_product": {
+        const { id } = data;
+        const { error } = await supabase.from("products").delete().eq("id", id);
+        if (error) throw error;
+        result = { success: true };
+        break;
+      }
+
       default:
         return new Response(JSON.stringify({ error: "Unknown action" }), {
           status: 400,

@@ -50,6 +50,54 @@ export type Database = {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          metadata: Json | null
+          name: string
+          original_price: number | null
+          price: number
+          product_key: string
+          server: string
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          name: string
+          original_price?: number | null
+          price?: number
+          product_key: string
+          server?: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          metadata?: Json | null
+          name?: string
+          original_price?: number | null
+          price?: number
+          product_key?: string
+          server?: string
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       store_settings: {
         Row: {
           id: string

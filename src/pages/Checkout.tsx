@@ -543,12 +543,13 @@ const tierConfig: Record<string, { icon: typeof Star; gradient: string; bgGradie
 const Checkout = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
+  const serverFromUrl = new URLSearchParams(window.location.search).get("server") as "gem" | "lifesteal" | null;
   const [selectedDuration, setSelectedDuration] = useState(0);
   const [keyQuantity, setKeyQuantity] = useState(1);
   const [currencyQuantity, setCurrencyQuantity] = useState(100);
   const [playerCount, setPlayerCount] = useState(1);
   const [showKitItems, setShowKitItems] = useState(false);
-  const [selectedServer, setSelectedServer] = useState<"gem" | "lifesteal">("gem");
+  const [selectedServer, setSelectedServer] = useState<"gem" | "lifesteal">(serverFromUrl || "gem");
   
   // Form states
   const [minecraftUsername, setMinecraftUsername] = useState("");
@@ -589,7 +590,7 @@ const Checkout = () => {
   const isSurvivalOnly = false;
   const isLifestealOnly = productId ? lifestealKeyIds.includes(productId) : false;
   const isTokenProduct = isToken || (productId?.startsWith("token-") ?? false);
-  const showServerSelector = !isLifestealOnly && !isCurrency && !isKey && !isTokenProduct && !isOneBlockProduct;
+  const showServerSelector = !serverFromUrl && !isLifestealOnly && !isCurrency && !isKey && !isTokenProduct && !isOneBlockProduct;
 
   useEffect(() => {
     window.scrollTo(0, 0);
