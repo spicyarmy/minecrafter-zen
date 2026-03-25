@@ -13,6 +13,7 @@ interface RankCardProps {
   image: string;
   tier: "spicy" | "pro" | "elite" | "legend" | "deadliest" | "immortal" | "supreme" | "admin" | "custom";
   index: number;
+  serverParam?: string;
 }
 
 const tierConfig = {
@@ -82,13 +83,15 @@ const RankCard = ({
   image,
   tier,
   index,
+  serverParam,
 }: RankCardProps) => {
   const navigate = useNavigate();
   const config = tierConfig[tier];
   const Icon = config.icon;
 
   const handleBuyClick = () => {
-    navigate(`/checkout/${tier}`);
+    const query = serverParam ? `?server=${serverParam}` : "";
+    navigate(`/checkout/${tier}${query}`);
   };
 
   return (
