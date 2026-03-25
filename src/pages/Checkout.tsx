@@ -543,8 +543,7 @@ const tierConfig: Record<string, { icon: typeof Star; gradient: string; bgGradie
 const Checkout = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
-  const [searchParams	] = useState(() => new URLSearchParams(window.location.search));
-  const serverFromUrl = searchParams.get("server") as "gem" | "lifesteal" | null;
+  const serverFromUrl = new URLSearchParams(window.location.search).get("server") as "gem" | "lifesteal" | null;
   const [selectedDuration, setSelectedDuration] = useState(0);
   const [keyQuantity, setKeyQuantity] = useState(1);
   const [currencyQuantity, setCurrencyQuantity] = useState(100);
