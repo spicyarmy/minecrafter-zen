@@ -96,9 +96,10 @@ const ranks = [
 
 interface RanksSectionProps {
   serverName?: string;
+  serverParam?: string;
 }
 
-const RanksSection = ({ serverName = "GEM SMP" }: RanksSectionProps) => {
+const RanksSection = ({ serverName = "GEM SMP", serverParam }: RanksSectionProps) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredRanks = ranks.filter((rank) =>
