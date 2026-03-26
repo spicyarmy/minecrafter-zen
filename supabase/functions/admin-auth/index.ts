@@ -86,6 +86,76 @@ Deno.serve(async (req) => {
         break;
       }
 
+      // Wheel CRUD
+      case "get_wheel_items": {
+        const { data: items, error } = await supabase
+          .from("wheel_items")
+          .select("*")
+          .order("weight", { ascending: false });
+        if (error) throw error;
+        result = { items };
+        break;
+      }
+
+      case "create_wheel_item": {
+        const { name, description, value_label, weight, color } = data;
+        const { error } = await supabase.from("wheel_items").insert({
+          name, description: description || "", value_label: value_label || "",
+          weight: weight || 10, color: color || "#ff0066",
+        });
+        if (error) throw error;
+        result = { success: true };
+        break;
+      }
+
+      case "update_wheel_item": {
+        const { id, ...updates } = data;
+        updates.updated_at = new Date().toISOString();
+        const { error } = await supabase.from("wheel_items").update(updates).eq("id", id);
+        if (error) throw error;
+        result = { success: true };
+        break;
+      }
+
+      case "delete_wheel_item": {
+        const { id } = data;
+        const { error } = await supabase.from("wheel_items").delete().eq("id", id);
+        if (error) throw error;
+        result = { success: true };
+        break;
+      }
+
+      case "get_wheel_codes": {
+        const { data: codes, error } = await supabase
+          .from("wheel_codes")
+          .select("*")
+          .order("created_at", { ascending: false });
+        if (error) throw error;
+        result = { codes };
+        break;
+      }
+
+      case "generate_wheel_codes": {
+        const count = Math.min(data.count || 5, 50);
+        const newCodes = [];
+        for (let i = 0; i < count; i++) {
+          const code = "SPIN-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+          newCodes.push({ code });
+        }
+        const { error } = await supabase.from("wheel_codes").insert(newCodes);
+        if (error) throw error;
+        result = { success: true, count };
+        break;
+      }
+
+      case "delete_wheel_code": {
+        const { id } = data;
+        const { error } = await supabase.from("wheel_codes").delete().eq("id", id);
+        if (error) throw error;
+        result = { success: true };
+        break;
+      }
+
       // Product CRUD
       case "get_products": {
         const { data: products, error } = await supabase

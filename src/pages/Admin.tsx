@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Shield, Server, Tag, CreditCard, LogOut, Percent, Package } from "lucide-react";
+import { Shield, Server, Tag, CreditCard, LogOut, Percent, Package, Dices } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import AdminLogin from "@/components/admin/AdminLogin";
@@ -8,9 +8,11 @@ import AdminServers from "@/components/admin/AdminServers";
 import AdminDiscounts from "@/components/admin/AdminDiscounts";
 import AdminCoupons from "@/components/admin/AdminCoupons";
 import AdminProducts from "@/components/admin/AdminProducts";
+import AdminWheel from "@/components/admin/AdminWheel";
 
 const TABS = [
   { id: "products", label: "Products", icon: Package },
+  { id: "wheel", label: "Lucky Wheel", icon: Dices },
   { id: "servers", label: "Servers", icon: Server },
   { id: "discounts", label: "Discounts", icon: Percent },
   { id: "coupons", label: "Coupons", icon: Tag },
@@ -100,6 +102,7 @@ const Admin = () => {
             transition={{ duration: 0.2 }}
           >
             {activeTab === "products" && <AdminProducts adminCall={adminCall} />}
+            {activeTab === "wheel" && <AdminWheel adminCall={adminCall} />}
             {activeTab === "servers" && <AdminServers settings={settings} setSettings={setSettings} adminCall={adminCall} />}
             {activeTab === "discounts" && <AdminDiscounts settings={settings} setSettings={setSettings} adminCall={adminCall} />}
             {activeTab === "coupons" && <AdminCoupons adminCall={adminCall} />}
