@@ -119,6 +119,72 @@ export type Database = {
         }
         Relationships: []
       }
+      wheel_codes: {
+        Row: {
+          code: string
+          created_at: string | null
+          id: string
+          is_used: boolean | null
+          used_at: string | null
+          used_by: string | null
+          won_item: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          id?: string
+          is_used?: boolean | null
+          used_at?: string | null
+          used_by?: string | null
+          won_item?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          id?: string
+          is_used?: boolean | null
+          used_at?: string | null
+          used_by?: string | null
+          won_item?: string | null
+        }
+        Relationships: []
+      }
+      wheel_items: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string | null
+          value_label: string | null
+          weight: number
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string | null
+          value_label?: string | null
+          weight?: number
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string | null
+          value_label?: string | null
+          weight?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
