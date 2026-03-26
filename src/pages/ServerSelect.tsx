@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { Gem, Sword, Sparkles } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { Gem, Sword, Sparkles, Gift } from "lucide-react";
 import ParticleBackground from "@/components/ParticleBackground";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -172,8 +172,28 @@ const ServerSelect = () => {
           </div>
         )}
 
+        {/* Lucky Wheel CTA */}
         <motion.div
-          className="text-center mt-16"
+          className="text-center mt-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+        >
+          <Link
+            to="/lucky-wheel"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl glass border border-primary/30 hover:border-primary/60 transition-all group"
+          >
+            <Gift className="w-6 h-6 text-primary group-hover:scale-110 transition-transform" />
+            <div className="text-left">
+              <span className="font-display font-bold text-foreground block">LUCKY WHEEL 🎡</span>
+              <span className="text-xs text-muted-foreground">₹50 me spin karo, ₹300+ tak jeeto!</span>
+            </div>
+            <span className="text-primary font-display">→</span>
+          </Link>
+        </motion.div>
+
+        <motion.div
+          className="text-center mt-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
