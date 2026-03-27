@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, X } from "lucide-react";
+import { Search, X, Loader2 } from "lucide-react";
 import RankCard from "./RankCard";
+import { useProducts } from "@/hooks/useProducts";
+
+// Fallback images for ranks
 import spicyRank from "@/assets/ranks/spicy_rank.png";
 import proRank from "@/assets/ranks/pro_rank.png";
 import eliteRank from "@/assets/ranks/elite_rank.png";
@@ -11,88 +14,13 @@ import immortalRank from "@/assets/ranks/immortal_rank.png";
 import supremeRank from "@/assets/ranks/supreme_rank.png";
 import customRank from "@/assets/ranks/custom_rank.png";
 
-const ranks = [
-  {
-    name: "PRO RANK",
-    description: "Start your journey with the PRO status. Includes essential commands.",
-    kitName: "PRO Kit",
-    originalPrice: "₹50",
-    salePrice: "₹40",
-    buyLink: "",
-    image: proRank,
-    tier: "pro" as const,
-  },
-  {
-    name: "ELITE RANK",
-    description: "Step up your game. Comes with colored chat and more homes.",
-    kitName: "ELITE Kit",
-    originalPrice: "₹70",
-    salePrice: "₹60",
-    buyLink: "",
-    image: eliteRank,
-    tier: "elite" as const,
-  },
-  {
-    name: "LEGEND RANK",
-    description: "Become a legend. Unlocks priority queue access.",
-    kitName: "LEGEND Kit",
-    originalPrice: "₹110",
-    salePrice: "₹90",
-    buyLink: "",
-    image: legendRank,
-    tier: "legend" as const,
-  },
-  {
-    name: "IMMORTAL RANK",
-    description: "Unlock the power of eternity. Enjoy flight in lobby and unique titles.",
-    kitName: "IMMORTAL Kit",
-    originalPrice: "₹150",
-    salePrice: "₹120",
-    buyLink: "",
-    image: immortalRank,
-    tier: "immortal" as const,
-  },
-  {
-    name: "DEADLIEST RANK",
-    description: "Unleash your true potential! Gain access to special combat perks.",
-    kitName: "DEADLIEST Kit",
-    originalPrice: "₹200",
-    salePrice: "₹170",
-    buyLink: "",
-    image: deadliestRank,
-    tier: "deadliest" as const,
-  },
-  {
-    name: "SUPREME RANK",
-    description: "The ultimate status. Dominate with maximum claim blocks.",
-    kitName: "SUPREME Kit",
-    originalPrice: "₹250",
-    salePrice: "₹220",
-    buyLink: "",
-    image: supremeRank,
-    tier: "supreme" as const,
-  },
-  {
-    name: "SPICY RANK",
-    description: "The ultimate signature rank! All fire perks and legendary items.",
-    kitName: "SPICY Kit",
-    originalPrice: "₹320",
-    salePrice: "₹280",
-    buyLink: "",
-    image: spicyRank,
-    tier: "spicy" as const,
-  },
-  {
-    name: "CUSTOM RANK",
-    description: "Create your own identity! Choose your own rank name with SPICY Kit perks + 2000 Claim Blocks.",
-    kitName: "CUSTOM Kit",
-    originalPrice: "₹400",
-    salePrice: "₹340",
-    buyLink: "",
-    image: customRank,
-    tier: "custom" as const,
-  },
-];
+const rankImages: Record<string, string> = {
+  pro: proRank, elite: eliteRank, legend: legendRank,
+  immortal: immortalRank, deadliest: deadliestRank,
+  supreme: supremeRank, spicy: spicyRank, custom: customRank,
+};
+
+const validTiers = ["spicy", "pro", "elite", "legend", "deadliest", "immortal", "supreme", "admin", "custom"] as const;
 
 interface RanksSectionProps {
   serverName?: string;
@@ -101,11 +29,12 @@ interface RanksSectionProps {
 
 const RanksSection = ({ serverName = "GEM SMP", serverParam }: RanksSectionProps) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const server = serverParam || "gem";
+  const { products, loading } = useProducts(server, "rank");
 
-  const filteredRanks = ranks.filter((rank) =>
-    rank.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    rank.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    rank.kitName.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredRanks = products.filter((p) =>
+    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (p.description || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -161,30 +90,50 @@ const RanksSection = ({ serverName = "GEM SMP", serverParam }: RanksSectionProps
           </div>
         </motion.div>
 
-        {searchQuery && (
-          <motion.p
-            className="text-center text-sm text-muted-foreground mb-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            Found {filteredRanks.length} rank{filteredRanks.length !== 1 ? 's' : ''}
-          </motion.p>
-        )}
+        {loading ? (
+          <div className="flex justify-center py-16">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          <>
+            {searchQuery && (
+              <motion.p className="text-center text-sm text-muted-foreground mb-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                Found {filteredRanks.length} rank{filteredRanks.length !== 1 ? 's' : ''}
+              </motion.p>
+            )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredRanks.map((rank, index) => (
-            <RankCard key={rank.name} {...rank} index={index} serverParam={serverParam} />
-          ))}
-        </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredRanks.map((product, index) => {
+                const tierKey = product.product_key.toLowerCase();
+                const tier = validTiers.includes(tierKey as any) ? tierKey as any : "pro";
+                const image = rankImages[tierKey] || proRank;
 
-        {filteredRanks.length === 0 && (
-          <motion.div
-            className="text-center py-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <p className="text-muted-foreground font-display">No ranks found matching "{searchQuery}"</p>
-          </motion.div>
+                return (
+                  <RankCard
+                    key={product.id}
+                    name={product.name}
+                    description={product.description || ""}
+                    kitName={`${product.name.replace(" RANK", "")} Kit`}
+                    originalPrice={`₹${product.original_price || product.price}`}
+                    salePrice={`₹${product.price}`}
+                    buyLink=""
+                    image={image}
+                    tier={tier}
+                    index={index}
+                    serverParam={serverParam}
+                  />
+                );
+              })}
+            </div>
+
+            {filteredRanks.length === 0 && !loading && (
+              <motion.div className="text-center py-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <p className="text-muted-foreground font-display">
+                  {searchQuery ? `No ranks found matching "${searchQuery}"` : "No ranks available"}
+                </p>
+              </motion.div>
+            )}
+          </>
         )}
       </div>
     </section>
