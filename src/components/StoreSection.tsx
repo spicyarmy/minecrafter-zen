@@ -1,88 +1,36 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Search, X } from "lucide-react";
+import { Search, X, Loader2 } from "lucide-react";
 import KeyCard from "./KeyCard";
-
-const keys = [
-  {
-    name: "Vote Key",
-    description: "DIAMOND KIT (II-III) SPAWNER GOLDEN APPLE",
-    price: "FREE",
-    buyLink: "https://spicysmp.dpdns.org/vote_key.html",
-    isFree: true,
-  },
-  {
-    name: "Party Key",
-    description: "Give other random keys to players",
-    price: "₹5",
-    buyLink: "https://spicysmp.dpdns.org/party_key.html",
-    isFree: false,
-  },
-  {
-    name: "Apple Key",
-    description: "FULL NETHERITE KIT Enchantment (IV) SPAWNER GOLDEN APPLE MORE LUCK",
-    price: "₹10",
-    buyLink: "https://spicysmp.dpdns.org/APPLE_key.html",
-    isFree: false,
-  },
-  {
-    name: "Banana Key",
-    description: "FULL NETHERITE KIT Enchantment (V) SPAWNER GOLDEN APPLE",
-    price: "₹15",
-    buyLink: "https://spicysmp.dpdns.org/banana_key.html",
-    isFree: false,
-  },
-  {
-    name: "Blood Key",
-    description: "FULL NETHERITE KIT Enchantment (VII) SPAWNER GOLDEN APPLE, NOTCH APPLE",
-    price: "₹20",
-    buyLink: "https://spicysmp.dpdns.org/BLOOD_key.html",
-    isFree: false,
-  },
-  {
-    name: "Blue Key",
-    description: "FULL NETHERITE KIT Enchantment (X) SPAWNER GOLDEN APPLE, NOTCH APPLE",
-    price: "₹25",
-    buyLink: "https://spicysmp.dpdns.org/BLUE_key.html",
-    isFree: false,
-  },
-  {
-    name: "Purple Key",
-    description: "FULL NETHERITE KIT Enchantment (XV) SPAWNER GOLDEN APPLE, MACE",
-    price: "₹30",
-    buyLink: "https://spicysmp.dpdns.org/purple_key.html",
-    isFree: false,
-  },
-];
+import { useProducts } from "@/hooks/useProducts";
 
 const categories = ["All", "Free Keys", "Premium Keys"];
 
 const StoreSection = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const { products, loading } = useProducts("gem", "key");
 
-  const filteredKeys = keys.filter((key) => {
-    const matchesCategory = 
+  const filteredKeys = products.filter((p) => {
+    const matchesCategory =
       activeCategory === "All" ? true :
-      activeCategory === "Free Keys" ? key.isFree :
-      activeCategory === "Premium Keys" ? !key.isFree : true;
-    
-    const matchesSearch = 
-      key.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      key.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
+      activeCategory === "Free Keys" ? p.price === 0 :
+      activeCategory === "Premium Keys" ? p.price > 0 : true;
+
+    const matchesSearch =
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.description || "").toLowerCase().includes(searchQuery.toLowerCase());
+
     return matchesCategory && matchesSearch;
   });
 
   return (
     <section id="store" className="relative py-24 overflow-hidden">
-      {/* Background decoration */}
       <div className="absolute inset-0 z-0">
         <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] rounded-full bg-accent/10 blur-[150px]" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* Section header */}
         <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: 30 }}
@@ -101,14 +49,7 @@ const StoreSection = () => {
           </p>
         </motion.div>
 
-        {/* Search bar */}
-        <motion.div
-          className="max-w-md mx-auto mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.15 }}
-        >
+        <motion.div className="max-w-md mx-auto mb-8" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.15 }}>
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <input
@@ -119,24 +60,14 @@ const StoreSection = () => {
               className="w-full pl-12 pr-10 py-3 rounded-xl bg-card border border-border/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent/50 focus:shadow-[0_0_20px_hsla(185,100%,50%,0.2)] transition-all duration-300 font-display text-sm"
             />
             {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
                 <X className="w-4 h-4" />
               </button>
             )}
           </div>
         </motion.div>
 
-        {/* Category filters */}
-        <motion.div
-          className="flex flex-wrap justify-center gap-3 mb-8"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-        >
+        <motion.div className="flex flex-wrap justify-center gap-3 mb-8" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
           {categories.map((category) => (
             <button
               key={category}
@@ -152,43 +83,37 @@ const StoreSection = () => {
           ))}
         </motion.div>
 
-        {/* Results count */}
-        {searchQuery && (
-          <motion.p
-            className="text-center text-sm text-muted-foreground mb-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            Found {filteredKeys.length} key{filteredKeys.length !== 1 ? 's' : ''}
-          </motion.p>
+        {loading ? (
+          <div className="flex justify-center py-16"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+        ) : (
+          <>
+            {searchQuery && (
+              <motion.p className="text-center text-sm text-muted-foreground mb-6" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                Found {filteredKeys.length} key{filteredKeys.length !== 1 ? 's' : ''}
+              </motion.p>
+            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {filteredKeys.map((product, index) => (
+                <KeyCard
+                  key={product.id}
+                  name={product.name}
+                  description={product.description || ""}
+                  price={product.price === 0 ? "FREE" : `₹${product.price}`}
+                  buyLink=""
+                  isFree={product.price === 0}
+                  index={index}
+                />
+              ))}
+            </div>
+            {filteredKeys.length === 0 && (
+              <motion.div className="text-center py-12" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <p className="text-muted-foreground font-display">No keys found matching "{searchQuery}"</p>
+              </motion.div>
+            )}
+          </>
         )}
 
-        {/* Keys grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {filteredKeys.map((key, index) => (
-            <KeyCard key={key.name} {...key} index={index} />
-          ))}
-        </div>
-
-        {/* No results message */}
-        {filteredKeys.length === 0 && (
-          <motion.div
-            className="text-center py-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <p className="text-muted-foreground font-display">No keys found matching "{searchQuery}"</p>
-          </motion.div>
-        )}
-
-        {/* Info banner */}
-        <motion.div
-          className="mt-12 p-6 rounded-2xl glass border border-accent/20 text-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-        >
+        <motion.div className="mt-12 p-6 rounded-2xl glass border border-accent/20 text-center" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.4 }}>
           <p className="text-muted-foreground">
             <span className="text-accent font-semibold">💡 TIP:</span> When a player uses a key in-game, they get random items according to their luck!
           </p>
