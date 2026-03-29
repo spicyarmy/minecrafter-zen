@@ -571,7 +571,22 @@ const Checkout = () => {
   // Site discount from admin
   const [siteDiscountPercent, setSiteDiscountPercent] = useState(0);
 
-  const product = productId ? products[productId] : null;
+  // Custom weapon support
+  const searchParams = new URLSearchParams(window.location.search);
+  const customName = searchParams.get("customName");
+  const customPrice = Number(searchParams.get("customPrice")) || 0;
+  
+  const product: Product | null = productId === "custom-weapon" && customName
+    ? {
+        type: "key" as const,
+        name: customName,
+        description: `Custom forged weapon - ${customName}`,
+        price: customPrice,
+        isFree: false,
+        rewards: [customName],
+        qrLink: "",
+      }
+    : productId ? products[productId] : null;
   
   const isCustomRank = product?.type === "rank" && (product as RankProduct).isCustomRank;
   const isCurrency = product?.type === "currency";
