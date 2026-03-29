@@ -194,6 +194,9 @@ const LifestealStore = () => {
       {/* Ranks */}
       <RanksSection serverName="LIFESTEAL" serverParam="lifesteal" />
 
+      {/* Custom Weapons */}
+      <CustomWeaponSection serverParam="lifesteal" />
+
       {/* Features */}
       <FeaturesSection />
 

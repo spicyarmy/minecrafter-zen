@@ -5,6 +5,7 @@ import RanksSection from "@/components/RanksSection";
 import StoreSection from "@/components/StoreSection";
 import LifestealStoreSection from "@/components/LifestealStoreSection";
 import CurrencySection from "@/components/CurrencySection";
+import CustomWeaponSection from "@/components/CustomWeaponSection";
 import VideoSection from "@/components/VideoSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import CTASection from "@/components/CTASection";
@@ -36,6 +37,9 @@ const Index = () => {
       
       {/* Lifesteal Keys Section */}
       <LifestealStoreSection />
+      
+      {/* Custom Weapons Section */}
+      <CustomWeaponSection serverParam="gem" />
       
       {/* Currency Section - Coins & Claim Blocks */}
       <CurrencySection />

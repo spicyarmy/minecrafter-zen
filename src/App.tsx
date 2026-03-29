@@ -10,6 +10,7 @@ import Checkout from "./pages/Checkout";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import LuckyWheel from "./pages/LuckyWheel";
+import CustomWeapon from "./pages/CustomWeapon";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/lifesteal" element={<LifestealStore />} />
           <Route path="/checkout/:productId" element={<Checkout />} />
           <Route path="/lucky-wheel" element={<LuckyWheel />} />
+          <Route path="/custom-weapon" element={<CustomWeapon />} />
           <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
