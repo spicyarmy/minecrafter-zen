@@ -3,20 +3,16 @@ import ParticleBackground from "@/components/ParticleBackground";
 import HeroSection from "@/components/HeroSection";
 import RanksSection from "@/components/RanksSection";
 import StoreSection from "@/components/StoreSection";
-import LifestealStoreSection from "@/components/LifestealStoreSection";
 import CurrencySection from "@/components/CurrencySection";
 import CustomWeaponSection from "@/components/CustomWeaponSection";
 import VideoSection from "@/components/VideoSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
-import GuidedTour from "@/components/GuidedTour";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Guided Tour disabled */}
-      
       {/* Animated particle background */}
       <ParticleBackground />
       
@@ -34,9 +30,6 @@ const Index = () => {
       
       {/* Survival Keys Section */}
       <StoreSection />
-      
-      {/* Lifesteal Keys Section */}
-      <LifestealStoreSection />
       
       {/* Custom Weapons Section */}
       <CustomWeaponSection serverParam="gem" />

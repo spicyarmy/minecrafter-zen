@@ -7,6 +7,7 @@ import RanksSection from "@/components/RanksSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import CTASection from "@/components/CTASection";
 import CustomWeaponSection from "@/components/CustomWeaponSection";
+import LifestealStoreSection from "@/components/LifestealStoreSection";
 import minecraftHero from "@/assets/minecraft-hero.png";
 
 const LifestealStore = () => {
@@ -194,6 +195,9 @@ const LifestealStore = () => {
 
       {/* Ranks */}
       <RanksSection serverName="LIFESTEAL" serverParam="lifesteal" />
+
+      {/* Lifesteal Keys */}
+      <LifestealStoreSection />
 
       {/* Custom Weapons */}
       <CustomWeaponSection serverParam="lifesteal" />
