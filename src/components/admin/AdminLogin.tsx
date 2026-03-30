@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import { Shield, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,22 +15,38 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
+    const cleanPassword = password.trim();
+    if (!cleanPassword) {
+      toast.error("Password enter karo");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const res = await supabase.functions.invoke("admin-auth", {
-        body: { action: "verify", password },
+        body: { action: "verify", password: cleanPassword },
       });
+
+      if (res.error) {
+        throw new Error(res.error.message);
+      }
+
       if (res.data?.success) {
-        sessionStorage.setItem("admin_pwd", password);
+        sessionStorage.setItem("admin_pwd", cleanPassword);
         onLogin();
         toast.success("Admin access granted!");
       } else {
         toast.error("Wrong password!");
       }
-    } catch {
-      toast.error("Authentication failed");
+    } catch (error: any) {
+      toast.error(error?.message || "Authentication failed");
     }
     setIsLoading(false);
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleLogin();
   };
 
   return (
@@ -48,7 +64,7 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
             <h1 className="font-display text-2xl font-bold gradient-text mb-2">ADMIN PANEL</h1>
             <p className="text-muted-foreground text-sm">Enter admin password to continue</p>
           </div>
-          <div className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
@@ -56,14 +72,13 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
                 placeholder="Admin Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
                 className="pl-10 bg-card border-border/50"
               />
             </div>
-            <Button onClick={handleLogin} disabled={isLoading} className="w-full" variant="hero">
+            <Button type="submit" disabled={isLoading} className="w-full" variant="hero">
               {isLoading ? "Verifying..." : "Login"}
             </Button>
-          </div>
+          </form>
         </div>
       </motion.div>
     </div>

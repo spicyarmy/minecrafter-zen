@@ -9,6 +9,7 @@ import AdminDiscounts from "@/components/admin/AdminDiscounts";
 import AdminCoupons from "@/components/admin/AdminCoupons";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminWheel from "@/components/admin/AdminWheel";
+import { toast } from "sonner";
 
 const TABS = [
   { id: "products", label: "Products", icon: Package },
@@ -22,14 +23,20 @@ type TabId = typeof TABS[number]["id"];
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("products");
   const [settings, setSettings] = useState<Record<string, any>>({});
 
   const adminCall = useCallback(async (action: string, data: any = {}) => {
     const storedPassword = sessionStorage.getItem("admin_pwd");
+    if (!storedPassword) {
+      throw new Error("Please login again");
+    }
+
     const res = await supabase.functions.invoke("admin-auth", {
       body: { action, password: storedPassword, ...data },
     });
+
     if (res.error) throw new Error(res.error.message);
     if (res.data?.error) throw new Error(res.data.error);
     return res.data;
@@ -50,8 +57,69 @@ const Admin = () => {
     }
   }, [isAuthenticated, loadSettings]);
 
+  useEffect(() => {
+    const verifyStoredSession = async () => {
+      const storedPassword = sessionStorage.getItem("admin_pwd");
+
+      if (!storedPassword) {
+        setIsCheckingSession(false);
+        return;
+      }
+
+      try {
+        const res = await supabase.functions.invoke("admin-auth", {
+          body: { action: "verify", password: storedPassword },
+        });
+
+        if (res.error || !res.data?.success) {
+          sessionStorage.removeItem("admin_pwd");
+          setIsAuthenticated(false);
+        } else {
+          setIsAuthenticated(true);
+        }
+      } catch {
+        sessionStorage.removeItem("admin_pwd");
+        setIsAuthenticated(false);
+      } finally {
+        setIsCheckingSession(false);
+      }
+    };
+
+    verifyStoredSession();
+  }, []);
+
+  useEffect(() => {
+    const onStorage = () => {
+      if (!sessionStorage.getItem("admin_pwd")) {
+        setIsAuthenticated(false);
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  const handleLogin = async () => {
+    setIsAuthenticated(true);
+    try {
+      await loadSettings();
+    } catch (error: any) {
+      toast.error(error?.message || "Settings load failed");
+    }
+  };
+
+  if (isCheckingSession) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="glass rounded-3xl px-6 py-5 border border-border/50 font-display text-sm tracking-wider text-muted-foreground">
+          Checking admin access...
+        </div>
+      </div>
+    );
+  }
+
   if (!isAuthenticated) {
-    return <AdminLogin onLogin={() => setIsAuthenticated(true)} />;
+    return <AdminLogin onLogin={handleLogin} />;
   }
 
   return (

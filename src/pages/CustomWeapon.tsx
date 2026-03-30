@@ -80,6 +80,9 @@ const ENCHANTMENTS: Record<string, { id: string; name: string; maxLevel: number;
   mace: [
     { id: "sharpness", name: "Sharpness", maxLevel: 15, pricePerLevel: 3, icon: "⚡" },
     { id: "smite", name: "Smite", maxLevel: 15, pricePerLevel: 2, icon: "☀️" },
+    { id: "density", name: "Density", maxLevel: 15, pricePerLevel: 3, icon: "🪨" },
+    { id: "breach", name: "Breach", maxLevel: 10, pricePerLevel: 4, icon: "🛡️" },
+    { id: "wind_burst", name: "Wind Burst", maxLevel: 10, pricePerLevel: 4, icon: "🌪️" },
     { id: "fire_aspect", name: "Fire Aspect", maxLevel: 10, pricePerLevel: 4, icon: "🔥" },
     { id: "knockback", name: "Knockback", maxLevel: 10, pricePerLevel: 3, icon: "💨" },
     { id: "unbreaking", name: "Unbreaking", maxLevel: 10, pricePerLevel: 2, icon: "🛡️" },

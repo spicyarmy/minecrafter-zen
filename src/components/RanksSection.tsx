@@ -118,6 +118,7 @@ const RanksSection = ({ serverName = "GEM SMP", serverParam }: RanksSectionProps
                     salePrice={`₹${product.price}`}
                     buyLink=""
                     image={image}
+                    productKey={product.product_key}
                     tier={tier}
                     index={index}
                     serverParam={serverParam}

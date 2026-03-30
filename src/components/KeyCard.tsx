@@ -8,37 +8,28 @@ interface KeyCardProps {
   description: string;
   price: string;
   buyLink: string;
+  productKey?: string;
+  serverParam?: string;
   isFree?: boolean;
   index: number;
 }
-
-// Map key names to URL-friendly IDs
-const keyIdMap: Record<string, string> = {
-  "Vote Key": "vote-key",
-  "Party Key": "party-key",
-  "Banana Key (5x)": "banana-key",
-  "Apple Key (5x)": "apple-key",
-  "Blood Key": "blood-key",
-  "Blue Key (5x)": "blue-key",
-  "Purple Key (5x)": "purple-key",
-  "Core Key": "core-key",
-  "Flux Key": "flux-key",
-  "Aura Key": "aura-key",
-};
 
 const KeyCard = ({
   name,
   description,
   price,
   buyLink,
+  productKey,
+  serverParam,
   isFree = false,
   index,
 }: KeyCardProps) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    const keyId = keyIdMap[name] || name.toLowerCase().replace(/\s+/g, "-").replace(/[()]/g, "");
-    navigate(`/checkout/${keyId}`);
+    const keyId = productKey || name.toLowerCase().replace(/\s+/g, "-").replace(/[()]/g, "");
+    const query = serverParam ? `?server=${serverParam}` : "";
+    navigate(`/checkout/${keyId}${query}`);
   };
 
   return (
