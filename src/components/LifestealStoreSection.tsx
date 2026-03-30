@@ -69,6 +69,8 @@ const LifestealStoreSection = () => {
                   description={product.description || ""}
                   price={product.price === 0 ? "FREE" : `₹${product.price}`}
                   buyLink=""
+                  productKey={product.product_key}
+                  serverParam="lifesteal"
                   isFree={product.price === 0}
                   index={index}
                 />

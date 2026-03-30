@@ -11,6 +11,7 @@ interface RankCardProps {
   salePrice: string;
   buyLink: string;
   image: string;
+  productKey: string;
   tier: "spicy" | "pro" | "elite" | "legend" | "deadliest" | "immortal" | "supreme" | "admin" | "custom";
   index: number;
   serverParam?: string;
@@ -81,6 +82,7 @@ const RankCard = ({
   salePrice,
   buyLink,
   image,
+  productKey,
   tier,
   index,
   serverParam,
@@ -91,7 +93,7 @@ const RankCard = ({
 
   const handleBuyClick = () => {
     const query = serverParam ? `?server=${serverParam}` : "";
-    navigate(`/checkout/${tier}${query}`);
+    navigate(`/checkout/${productKey}${query}`);
   };
 
   return (

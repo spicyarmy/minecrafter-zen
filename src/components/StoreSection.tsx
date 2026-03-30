@@ -100,6 +100,8 @@ const StoreSection = () => {
                   description={product.description || ""}
                   price={product.price === 0 ? "FREE" : `₹${product.price}`}
                   buyLink=""
+                  productKey={product.product_key}
+                  serverParam="gem"
                   isFree={product.price === 0}
                   index={index}
                 />
