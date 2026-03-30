@@ -15,6 +15,9 @@ export interface Product {
   metadata: any;
 }
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1500;
+
 export const useProducts = (server?: string, category?: string) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,9 +25,7 @@ export const useProducts = (server?: string, category?: string) => {
   useEffect(() => {
     let isMounted = true;
 
-    const fetchProducts = async () => {
-      setLoading(true);
-
+    const fetchOnce = async () => {
       let query = supabase
         .from("products")
         .select("*")
@@ -35,19 +36,27 @@ export const useProducts = (server?: string, category?: string) => {
       if (server) query = query.eq("server", server);
       if (category) query = query.eq("category", category);
 
-      const { data, error } = await query;
+      return query;
+    };
 
-      if (!isMounted) return;
-
-      if (error) {
-        console.error("Failed to load products", { server, category, error: error.message });
-        setProducts([]);
-        setLoading(false);
-        return;
+    const fetchProducts = async () => {
+      setLoading(true);
+      for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+        const { data, error } = await fetchOnce();
+        if (!isMounted) return;
+        if (!error && data) {
+          setProducts(data as Product[]);
+          setLoading(false);
+          return;
+        }
+        if (attempt < MAX_RETRIES - 1) {
+          await new Promise(r => setTimeout(r, RETRY_DELAY));
+        } else {
+          console.error("Failed to load products after retries", { server, category, error: error?.message });
+          setProducts([]);
+          setLoading(false);
+        }
       }
-
-      setProducts((data as Product[]) || []);
-      setLoading(false);
     };
 
     fetchProducts();
