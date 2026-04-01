@@ -172,6 +172,7 @@ const Admin = () => {
             transition={{ duration: 0.2 }}
           >
             {activeTab === "products" && <AdminProducts adminCall={adminCall} />}
+            {activeTab === "delivery" && <AdminDelivery adminCall={adminCall} />}
             {activeTab === "wheel" && <AdminWheel adminCall={adminCall} />}
             {activeTab === "servers" && <AdminServers settings={settings} setSettings={setSettings} adminCall={adminCall} />}
             {activeTab === "discounts" && <AdminDiscounts settings={settings} setSettings={setSettings} adminCall={adminCall} />}

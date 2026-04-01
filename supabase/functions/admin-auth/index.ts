@@ -156,6 +156,40 @@ Deno.serve(async (req) => {
         break;
       }
 
+      // Pending Commands (Delivery)
+      case "get_pending_commands": {
+        const { data: commands, error } = await supabase
+          .from("pending_commands")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(100);
+        if (error) throw error;
+        result = { commands };
+        break;
+      }
+
+      case "create_pending_command": {
+        const { player_name, command, server: cmdServer, product_info } = data;
+        const { error } = await supabase.from("pending_commands").insert({
+          player_name,
+          command,
+          server: cmdServer || "gem",
+          product_info: product_info || "",
+          status: "pending",
+        });
+        if (error) throw error;
+        result = { success: true };
+        break;
+      }
+
+      case "delete_pending_command": {
+        const { id } = data;
+        const { error } = await supabase.from("pending_commands").delete().eq("id", id);
+        if (error) throw error;
+        result = { success: true };
+        break;
+      }
+
       // Product CRUD
       case "get_products": {
         const { data: products, error } = await supabase
