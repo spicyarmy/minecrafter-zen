@@ -17,6 +17,7 @@ interface Product {
   original_price: number;
   is_active: boolean;
   sort_order: number;
+  command_template: string;
 }
 
 interface AdminProductsProps {
