@@ -17,6 +17,7 @@ interface Product {
   original_price: number;
   is_active: boolean;
   sort_order: number;
+  command_template: string;
 }
 
 interface AdminProductsProps {
@@ -76,6 +77,7 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
         category: editForm.category,
         server: editForm.server,
         sort_order: editForm.sort_order,
+        command_template: editForm.command_template,
       });
       toast.success("Product updated!");
       cancelEdit();
@@ -337,6 +339,16 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
                     onChange={(e) => setEditForm(p => ({ ...p, description: e.target.value }))}
                     className="bg-card border-border/50"
                   />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">Command Template</label>
+                  <Input
+                    placeholder="lp user {player} parent set vip"
+                    value={editForm.command_template || ""}
+                    onChange={(e) => setEditForm(p => ({ ...p, command_template: e.target.value }))}
+                    className="bg-card border-border/50 font-mono text-xs"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Use {"{player}"} for player name</p>
                 </div>
                 <div className="flex gap-2">
                   <Button size="sm" onClick={saveEdit}>
