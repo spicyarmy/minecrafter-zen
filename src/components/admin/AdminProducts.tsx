@@ -339,6 +339,16 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
                     className="bg-card border-border/50"
                   />
                 </div>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">Command Template</label>
+                  <Input
+                    placeholder="lp user {player} parent set vip"
+                    value={editForm.command_template || ""}
+                    onChange={(e) => setEditForm(p => ({ ...p, command_template: e.target.value }))}
+                    className="bg-card border-border/50 font-mono text-xs"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Use {"{player}"} for player name</p>
+                </div>
                 <div className="flex gap-2">
                   <Button size="sm" onClick={saveEdit}>
                     <Save className="w-4 h-4 mr-1" /> Save
