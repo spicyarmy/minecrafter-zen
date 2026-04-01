@@ -9,6 +9,7 @@ import AdminDiscounts from "@/components/admin/AdminDiscounts";
 import AdminCoupons from "@/components/admin/AdminCoupons";
 import AdminProducts from "@/components/admin/AdminProducts";
 import AdminWheel from "@/components/admin/AdminWheel";
+import AdminDelivery from "@/components/admin/AdminDelivery";
 import { toast } from "sonner";
 
 const TABS = [
