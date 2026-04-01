@@ -14,6 +14,7 @@ import { toast } from "sonner";
 
 const TABS = [
   { id: "products", label: "Products", icon: Package },
+  { id: "delivery", label: "Delivery", icon: Send },
   { id: "wheel", label: "Lucky Wheel", icon: Dices },
   { id: "servers", label: "Servers", icon: Server },
   { id: "discounts", label: "Discounts", icon: Percent },
