@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Shield, Server, Tag, CreditCard, LogOut, Percent, Package, Dices } from "lucide-react";
+import { Shield, Server, Tag, CreditCard, LogOut, Percent, Package, Dices, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import AdminLogin from "@/components/admin/AdminLogin";
