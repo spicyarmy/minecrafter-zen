@@ -77,6 +77,7 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
         category: editForm.category,
         server: editForm.server,
         sort_order: editForm.sort_order,
+        command_template: editForm.command_template,
       });
       toast.success("Product updated!");
       cancelEdit();
