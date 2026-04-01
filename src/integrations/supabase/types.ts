@@ -50,9 +50,43 @@ export type Database = {
         }
         Relationships: []
       }
+      pending_commands: {
+        Row: {
+          command: string
+          created_at: string | null
+          executed_at: string | null
+          id: string
+          player_name: string
+          product_info: string | null
+          server: string
+          status: string
+        }
+        Insert: {
+          command: string
+          created_at?: string | null
+          executed_at?: string | null
+          id?: string
+          player_name: string
+          product_info?: string | null
+          server?: string
+          status?: string
+        }
+        Update: {
+          command?: string
+          created_at?: string | null
+          executed_at?: string | null
+          id?: string
+          player_name?: string
+          product_info?: string | null
+          server?: string
+          status?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string
+          command_template: string | null
           created_at: string | null
           description: string | null
           id: string
@@ -68,6 +102,7 @@ export type Database = {
         }
         Insert: {
           category?: string
+          command_template?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
@@ -83,6 +118,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          command_template?: string | null
           created_at?: string | null
           description?: string | null
           id?: string
