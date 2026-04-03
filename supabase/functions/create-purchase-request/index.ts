@@ -43,10 +43,26 @@ Deno.serve(async (req) => {
           .replace(/%player_name%/g, player_name)
           .replace(/\{quantity\}/g, String(quantity || 1))
           .replace(/\{days\}/g, String(duration || 30));
+      } else {
+        // No template found - build a basic command from product name
+        const cleanName = (product?.name || product_name).toLowerCase().replace(/\s*(rank|key)\s*/gi, '').trim();
+        if (product_name.toLowerCase().includes('key')) {
+          command = `crate key give ${player_name} ${cleanName} ${quantity || 1}`;
+        } else {
+          command = `lp user ${player_name} parent addtemp ${cleanName} ${duration || 30}d`;
+        }
       }
 
       if (product?.name) {
         productInfo = product.name;
+      }
+    } else {
+      // No product_key at all - still build a reasonable command
+      const cleanName = product_name.toLowerCase().replace(/\s*(rank|key)\s*/gi, '').trim();
+      if (product_name.toLowerCase().includes('key')) {
+        command = `crate key give ${player_name} ${cleanName} ${quantity || 1}`;
+      } else {
+        command = `lp user ${player_name} parent addtemp ${cleanName} ${duration || 30}d`;
       }
     }
 
