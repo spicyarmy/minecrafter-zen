@@ -190,6 +190,21 @@ Deno.serve(async (req) => {
         break;
       }
 
+      case "update_pending_command_status": {
+        const { id, status: newStatus } = data;
+        const updateData: any = { status: newStatus };
+        if (newStatus === "executed") {
+          updateData.executed_at = new Date().toISOString();
+        }
+        const { error } = await supabase
+          .from("pending_commands")
+          .update(updateData)
+          .eq("id", id);
+        if (error) throw error;
+        result = { success: true };
+        break;
+      }
+
       // Product CRUD
       case "get_products": {
         const { data: products, error } = await supabase
