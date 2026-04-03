@@ -75,7 +75,7 @@ Deno.serve(async (req) => {
 
     const { error } = await supabase.from("pending_commands").insert({
       player_name,
-      command: command || `MANUAL: ${product_name} for ${player_name}`,
+      command,
       server,
       status: "review",
       product_info: infoParts.join(" | "),
