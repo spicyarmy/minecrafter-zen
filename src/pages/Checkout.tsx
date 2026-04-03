@@ -847,6 +847,27 @@ const Checkout = () => {
         body: formData,
       });
 
+      // Create purchase query in database for admin panel
+      const serverName = isOneBlockProduct ? "oneblock" : isTokenProduct ? "token" : isLifestealOnly ? "lifesteal" : selectedServer;
+      const playerNameForDb = isOneBlockPerPlayer ? teamPlayerNames.join(", ") : minecraftUsername;
+      
+      try {
+        await supabase.functions.invoke("create-purchase-request", {
+          body: {
+            player_name: playerNameForDb,
+            product_name: product?.name || "Unknown",
+            product_key: productId || "",
+            server: serverName,
+            quantity: isKey || isOneBlockKey ? keyQuantity : isCurrency ? currencyQuantity : 1,
+            duration: isRank ? (product as RankProduct).durations[selectedDuration].days : isOneBlockRank ? 30 : undefined,
+            price,
+            coupon: appliedCoupon?.code || undefined,
+          },
+        });
+      } catch (dbErr) {
+        console.error("Failed to create purchase query:", dbErr);
+      }
+
       setIsSubmitted(true);
       toast.success("Purchase request submitted successfully!");
     } catch (error) {

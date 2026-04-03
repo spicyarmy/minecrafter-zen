@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Send, RefreshCw, Check, X, Clock, AlertTriangle, Trash2 } from "lucide-react";
+import { Send, RefreshCw, Check, X, Clock, AlertTriangle, Trash2, CheckCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -15,108 +15,59 @@ interface PendingCommand {
   executed_at: string | null;
 }
 
-interface Product {
-  id: string;
-  name: string;
-  product_key: string;
-  server: string;
-  command_template: string;
-  category: string;
-}
-
 interface AdminDeliveryProps {
   adminCall: (action: string, data?: any) => Promise<any>;
 }
 
 const AdminDelivery = ({ adminCall }: AdminDeliveryProps) => {
   const [commands, setCommands] = useState<PendingCommand[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [playerName, setPlayerName] = useState("");
-  const [selectedProductId, setSelectedProductId] = useState("");
-  const [customCommand, setCustomCommand] = useState("");
-  const [selectedServer, setSelectedServer] = useState("gem");
-  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("review");
   const [loading, setLoading] = useState(false);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   const loadCommands = useCallback(async () => {
+    setLoading(true);
     try {
       const data = await adminCall("get_pending_commands");
       setCommands(data.commands || []);
     } catch (e: any) {
       console.error(e);
-    }
-  }, [adminCall]);
-
-  const loadProducts = useCallback(async () => {
-    try {
-      const data = await adminCall("get_products");
-      setProducts((data.products || []).filter((p: Product) => p.command_template));
-    } catch (e: any) {
-      console.error(e);
+    } finally {
+      setLoading(false);
     }
   }, [adminCall]);
 
   useEffect(() => {
     loadCommands();
-    loadProducts();
-  }, [loadCommands, loadProducts]);
+  }, [loadCommands]);
 
-  const generateCommand = (template: string, player: string): string => {
-    return template.replace(/\{player\}/g, player);
-  };
-
-  const handleDeliver = async () => {
-    if (!playerName.trim()) {
-      toast.error("Player name is required!");
-      return;
-    }
-
-    let finalCommand = customCommand.trim();
-    let productInfo = "Custom command";
-
-    if (selectedProductId && !finalCommand) {
-      const product = products.find(p => p.id === selectedProductId);
-      if (!product) {
-        toast.error("Product not found");
-        return;
-      }
-      if (!product.command_template) {
-        toast.error("This product has no command template set!");
-        return;
-      }
-      finalCommand = generateCommand(product.command_template, playerName.trim());
-      productInfo = product.name;
-    }
-
-    if (!finalCommand) {
-      toast.error("Select a product or enter a custom command!");
-      return;
-    }
-
-    setLoading(true);
+  const confirmOrder = async (cmd: PendingCommand) => {
+    setConfirmingId(cmd.id);
     try {
-      await adminCall("create_pending_command", {
-        player_name: playerName.trim(),
-        command: finalCommand,
-        server: selectedServer,
-        product_info: productInfo,
-      });
-      toast.success(`Command queued for ${playerName}!`);
-      setPlayerName("");
-      setCustomCommand("");
-      setSelectedProductId("");
+      await adminCall("update_pending_command_status", { id: cmd.id, status: "pending" });
+      toast.success(`✅ Order confirmed for ${cmd.player_name}! Command queued for execution.`);
       loadCommands();
     } catch (e: any) {
-      toast.error(e.message || "Failed to queue command");
+      toast.error(e.message || "Failed to confirm");
     } finally {
-      setLoading(false);
+      setConfirmingId(null);
+    }
+  };
+
+  const rejectOrder = async (id: string) => {
+    try {
+      await adminCall("update_pending_command_status", { id, status: "rejected" });
+      toast.success("Order rejected");
+      loadCommands();
+    } catch {
+      toast.error("Failed to reject");
     }
   };
 
   const deleteCommand = async (id: string) => {
     try {
       await adminCall("delete_pending_command", { id });
-      toast.success("Command deleted!");
+      toast.success("Deleted!");
       loadCommands();
     } catch {
       toast.error("Failed to delete");
@@ -127,7 +78,21 @@ const AdminDelivery = ({ adminCall }: AdminDeliveryProps) => {
     switch (status) {
       case "executed": return <Check className="w-4 h-4 text-green-500" />;
       case "failed": return <AlertTriangle className="w-4 h-4 text-red-500" />;
-      default: return <Clock className="w-4 h-4 text-yellow-500 animate-pulse" />;
+      case "rejected": return <X className="w-4 h-4 text-red-500" />;
+      case "review": return <Eye className="w-4 h-4 text-blue-400 animate-pulse" />;
+      case "pending": return <Clock className="w-4 h-4 text-yellow-500 animate-pulse" />;
+      default: return <Clock className="w-4 h-4 text-yellow-500" />;
+    }
+  };
+
+  const statusColor = (status: string) => {
+    switch (status) {
+      case "executed": return "bg-green-500/20 text-green-400";
+      case "failed": return "bg-red-500/20 text-red-400";
+      case "rejected": return "bg-red-500/20 text-red-400";
+      case "review": return "bg-blue-500/20 text-blue-400";
+      case "pending": return "bg-yellow-500/20 text-yellow-400";
+      default: return "bg-muted text-muted-foreground";
     }
   };
 
@@ -136,148 +101,155 @@ const AdminDelivery = ({ adminCall }: AdminDeliveryProps) => {
     return c.status === filterStatus;
   });
 
-  const serverProducts = products.filter(p => p.server === selectedServer);
+  const reviewCount = commands.filter(c => c.status === "review").length;
+  const pendingCount = commands.filter(c => c.status === "pending").length;
 
   return (
     <div className="space-y-6">
-      {/* Deliver Form */}
-      <div className="glass rounded-2xl p-6 border border-primary/30">
-        <h3 className="font-display text-sm font-bold mb-4 text-muted-foreground tracking-wider">
-          🎮 DELIVER TO PLAYER
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="text-xs text-muted-foreground mb-1 block">Player Name (Minecraft)</label>
-            <Input
-              placeholder="Steve123"
-              value={playerName}
-              onChange={e => setPlayerName(e.target.value)}
-              className="bg-card border-border/50"
-            />
-          </div>
-          <div>
-            <label className="text-xs text-muted-foreground mb-1 block">Server</label>
-            <select
-              value={selectedServer}
-              onChange={e => setSelectedServer(e.target.value)}
-              className="w-full h-10 rounded-md bg-card border border-border/50 px-3 text-sm"
-            >
-              <option value="gem">Gem SMP</option>
-              <option value="lifesteal">Lifesteal</option>
-            </select>
-          </div>
-          <div>
-            <label className="text-xs text-muted-foreground mb-1 block">Select Product</label>
-            <select
-              value={selectedProductId}
-              onChange={e => {
-                setSelectedProductId(e.target.value);
-                if (e.target.value) setCustomCommand("");
-              }}
-              className="w-full h-10 rounded-md bg-card border border-border/50 px-3 text-sm"
-            >
-              <option value="">-- Select product --</option>
-              {serverProducts.map(p => (
-                <option key={p.id} value={p.id}>
-                  {p.name} ({p.category})
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="text-xs text-muted-foreground mb-1 block">Or Custom Command</label>
-            <Input
-              placeholder="lp user Steve123 parent set vip"
-              value={customCommand}
-              onChange={e => {
-                setCustomCommand(e.target.value);
-                if (e.target.value) setSelectedProductId("");
-              }}
-              className="bg-card border-border/50"
-            />
-          </div>
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="glass rounded-xl p-4 border border-blue-500/30">
+          <p className="text-xs text-muted-foreground font-display tracking-wider">PURCHASE QUERIES</p>
+          <p className="text-2xl font-display font-black text-blue-400">{reviewCount}</p>
         </div>
-
-        {/* Preview */}
-        {playerName && (selectedProductId || customCommand) && (
-          <div className="mt-4 p-3 rounded-lg bg-card/50 border border-border/30">
-            <p className="text-xs text-muted-foreground mb-1">Command Preview:</p>
-            <code className="text-sm text-primary font-mono">
-              {customCommand || (selectedProductId
-                ? generateCommand(
-                    products.find(p => p.id === selectedProductId)?.command_template || "",
-                    playerName
-                  )
-                : "")}
-            </code>
-          </div>
-        )}
-
-        <Button onClick={handleDeliver} disabled={loading} className="mt-4">
-          <Send className="w-4 h-4 mr-2" />
-          {loading ? "Sending..." : "Queue Command"}
-        </Button>
+        <div className="glass rounded-xl p-4 border border-yellow-500/30">
+          <p className="text-xs text-muted-foreground font-display tracking-wider">QUEUED</p>
+          <p className="text-2xl font-display font-black text-yellow-400">{pendingCount}</p>
+        </div>
+        <div className="glass rounded-xl p-4 border border-green-500/30">
+          <p className="text-xs text-muted-foreground font-display tracking-wider">EXECUTED</p>
+          <p className="text-2xl font-display font-black text-green-400">
+            {commands.filter(c => c.status === "executed").length}
+          </p>
+        </div>
+        <div className="glass rounded-xl p-4 border border-red-500/30">
+          <p className="text-xs text-muted-foreground font-display tracking-wider">FAILED/REJECTED</p>
+          <p className="text-2xl font-display font-black text-red-400">
+            {commands.filter(c => c.status === "failed" || c.status === "rejected").length}
+          </p>
+        </div>
       </div>
 
-      {/* Command History */}
+      {/* Filter Tabs */}
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <h2 className="font-display text-xl font-bold">Delivery Queue</h2>
-        <div className="flex gap-2">
-          {["all", "pending", "executed", "failed"].map(s => (
+        <h2 className="font-display text-xl font-bold">
+          {filterStatus === "review" ? "🛒 Purchase Queries" : 
+           filterStatus === "pending" ? "⏳ Queued Commands" :
+           filterStatus === "executed" ? "✅ Executed" :
+           "📋 All Orders"}
+        </h2>
+        <div className="flex gap-2 flex-wrap">
+          {[
+            { key: "review", label: `QUERIES${reviewCount > 0 ? ` (${reviewCount})` : ""}` },
+            { key: "pending", label: `QUEUED${pendingCount > 0 ? ` (${pendingCount})` : ""}` },
+            { key: "executed", label: "EXECUTED" },
+            { key: "all", label: "ALL" },
+          ].map(s => (
             <button
-              key={s}
-              onClick={() => setFilterStatus(s)}
+              key={s.key}
+              onClick={() => setFilterStatus(s.key)}
               className={`px-3 py-1.5 rounded-lg font-display text-xs tracking-wider transition-all ${
-                filterStatus === s
+                filterStatus === s.key
                   ? "bg-primary text-primary-foreground"
                   : "glass text-muted-foreground hover:text-foreground"
               }`}
             >
-              {s.toUpperCase()}
+              {s.label}
             </button>
           ))}
-          <Button variant="ghost" size="sm" onClick={loadCommands}>
-            <RefreshCw className="w-4 h-4" />
+          <Button variant="ghost" size="sm" onClick={loadCommands} disabled={loading}>
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </Button>
         </div>
       </div>
 
-      <div className="space-y-2">
+      {/* Orders List */}
+      <div className="space-y-3">
         {filteredCommands.map(cmd => (
-          <div key={cmd.id} className="glass rounded-xl p-4 flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3">
-              {statusIcon(cmd.status)}
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-display font-bold">{cmd.player_name}</span>
+          <div
+            key={cmd.id}
+            className={`glass rounded-xl p-5 border transition-all ${
+              cmd.status === "review" ? "border-blue-500/40 shadow-[0_0_15px_hsla(220,80%,50%,0.15)]" : "border-border/30"
+            }`}
+          >
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div className="flex-1 min-w-0">
+                {/* Player + Status */}
+                <div className="flex items-center gap-2 flex-wrap mb-2">
+                  {statusIcon(cmd.status)}
+                  <span className="font-display font-bold text-lg">{cmd.player_name}</span>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary font-display">
                     {cmd.server.toUpperCase()}
                   </span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-display ${
-                    cmd.status === "executed" ? "bg-green-500/20 text-green-400" :
-                    cmd.status === "failed" ? "bg-red-500/20 text-red-400" :
-                    "bg-yellow-500/20 text-yellow-400"
-                  }`}>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-display ${statusColor(cmd.status)}`}>
                     {cmd.status.toUpperCase()}
                   </span>
                 </div>
-                <code className="text-xs text-muted-foreground font-mono mt-1 block">{cmd.command}</code>
-                <div className="text-xs text-muted-foreground mt-1">
-                  {cmd.product_info && <span className="mr-3">📦 {cmd.product_info}</span>}
-                  <span>{new Date(cmd.created_at).toLocaleString()}</span>
-                  {cmd.executed_at && <span className="ml-3">✅ {new Date(cmd.executed_at).toLocaleString()}</span>}
+
+                {/* Product Info */}
+                {cmd.product_info && (
+                  <div className="text-sm text-foreground mb-2">
+                    📦 {cmd.product_info}
+                  </div>
+                )}
+
+                {/* Command */}
+                {cmd.command && (
+                  <div className="p-2 rounded-lg bg-card/50 border border-border/30 mb-2">
+                    <p className="text-xs text-muted-foreground mb-1">Command:</p>
+                    <code className="text-xs text-primary font-mono break-all">{cmd.command}</code>
+                  </div>
+                )}
+
+                {/* Timestamps */}
+                <div className="text-xs text-muted-foreground flex gap-4 flex-wrap">
+                  <span>🕐 {new Date(cmd.created_at).toLocaleString()}</span>
+                  {cmd.executed_at && <span>✅ {new Date(cmd.executed_at).toLocaleString()}</span>}
                 </div>
               </div>
+
+              {/* Actions */}
+              <div className="flex gap-2 shrink-0">
+                {cmd.status === "review" && (
+                  <>
+                    <Button
+                      size="sm"
+                      onClick={() => confirmOrder(cmd)}
+                      disabled={confirmingId === cmd.id}
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      <CheckCircle className="w-4 h-4 mr-1" />
+                      {confirmingId === cmd.id ? "..." : "Confirm"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => rejectOrder(cmd.id)}
+                    >
+                      <X className="w-4 h-4 mr-1" />
+                      Reject
+                    </Button>
+                  </>
+                )}
+                <Button variant="ghost" size="icon" onClick={() => deleteCommand(cmd.id)}>
+                  <Trash2 className="w-4 h-4 text-destructive" />
+                </Button>
+              </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => deleteCommand(cmd.id)}>
-              <Trash2 className="w-4 h-4 text-destructive" />
-            </Button>
           </div>
         ))}
+
         {filteredCommands.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            <Send className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p>No commands in queue</p>
+          <div className="text-center py-12 text-muted-foreground">
+            <Send className="w-10 h-10 mx-auto mb-3 opacity-50" />
+            <p className="font-display">
+              {filterStatus === "review" ? "No purchase queries yet" :
+               filterStatus === "pending" ? "No commands queued" :
+               "No orders found"}
+            </p>
+            <p className="text-xs mt-1">
+              {filterStatus === "review" && "When someone buys from the store, their order will appear here."}
+            </p>
           </div>
         )}
       </div>
