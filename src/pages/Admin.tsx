@@ -73,11 +73,12 @@ const Admin = () => {
           body: { action: "verify", password: storedPassword },
         });
 
-        if (res.error || !res.data?.success) {
+        // If data.success exists, the password is valid
+        if (res.data?.success) {
+          setIsAuthenticated(true);
+        } else {
           sessionStorage.removeItem("admin_pwd");
           setIsAuthenticated(false);
-        } else {
-          setIsAuthenticated(true);
         }
       } catch {
         sessionStorage.removeItem("admin_pwd");
