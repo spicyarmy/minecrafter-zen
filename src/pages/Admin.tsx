@@ -39,8 +39,17 @@ const Admin = () => {
       body: { action, password: storedPassword, ...data },
     });
 
-    if (res.error) throw new Error(res.error.message);
+    // Handle both success and error responses
     if (res.data?.error) throw new Error(res.data.error);
+    if (res.error && !res.data) {
+      // Try to get error message from the response
+      let msg = res.error.message;
+      try {
+        const ctx = await (res.error as any)?.context?.json?.();
+        if (ctx?.error) msg = ctx.error;
+      } catch {}
+      throw new Error(msg);
+    }
     return res.data;
   }, []);
 
@@ -73,11 +82,12 @@ const Admin = () => {
           body: { action: "verify", password: storedPassword },
         });
 
-        if (res.error || !res.data?.success) {
+        // If data.success exists, the password is valid
+        if (res.data?.success) {
+          setIsAuthenticated(true);
+        } else {
           sessionStorage.removeItem("admin_pwd");
           setIsAuthenticated(false);
-        } else {
-          setIsAuthenticated(true);
         }
       } catch {
         sessionStorage.removeItem("admin_pwd");

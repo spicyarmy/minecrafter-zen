@@ -19,7 +19,7 @@ const tourSteps: TourStep[] = [
   },
   {
     title: "Browse Premium Ranks 👑",
-    description: "Scroll down to see our ranks from PRO to SPICY. Each rank gives you special perks like /fly, /kit, home slots, and more!",
+    description: "Scroll down to see our ranks from PRO to SPICY. Each rank gives you special perks like /pv, /kit, home slots, and more!",
     icon: <Crown className="w-8 h-8" />,
     position: "center",
   },

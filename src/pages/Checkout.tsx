@@ -114,7 +114,7 @@ const products: Record<string, Product> = {
     durations: [
       { days: 30, price: 40 },
     ],
-    perks: ["/Kit", "/Fly", "/Withdraw", "2 Home Slots", "2 Auction Slots", "Priority Support"],
+    perks: ["/Kit", "/pv", "2 Home Slots", "2 Auction Slots", "Priority Support"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Diamond Shovel", "Water Bucket", "Iron Block x2", "Diamond Helmet (Protection IV, Unbreaking III, Mending)", "Diamond Chestplate (Protection IV, Unbreaking III, Mending)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
     qrLink: "",
   },
@@ -128,7 +128,7 @@ const products: Record<string, Product> = {
     durations: [
       { days: 30, price: 60 },
     ],
-    perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "4 Home Slots", "4 Auction Slots"],
+    perks: ["/Kit", "/pv", "4 Home Slots", "4 Auction Slots"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Diamond Shovel", "Diamond Hoe", "Milk Bucket", "Iron Block", "Bed", "Diamond Helmet (Protection V, Unbreaking V, Mending)", "Diamond Chestplate (Protection V, Unbreaking V, Mending)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
     qrLink: "",
   },
@@ -142,7 +142,7 @@ const products: Record<string, Product> = {
     durations: [
       { days: 30, price: 90 },
     ],
-    perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "6 Home Slots", "6 Auction Slots"],
+    perks: ["/Kit", "/pv", "6 Home Slots", "6 Auction Slots"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Golden Apple x32", "Golden Block x2", "Ladder", "Diamond Helmet (Protection VI, Thorns III, Unbreaking VI, Mending)", "Diamond Chestplate (Protection VI, Thorns III, Unbreaking VI, Mending)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
     qrLink: "",
   },
@@ -156,7 +156,7 @@ const products: Record<string, Product> = {
     durations: [
       { days: 30, price: 120 },
     ],
-    perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "8 Home Slots", "8 Auction Slots"],
+    perks: ["/Kit", "/pv", "8 Home Slots", "8 Auction Slots"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Slime Block x2", "Ladder", "Diamond Helmet (Protection VII, Unbreaking VII, Mending VII)", "Diamond Chestplate (Protection VII, Unbreaking VII, Mending VII)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
     qrLink: "",
   },
@@ -170,7 +170,7 @@ const products: Record<string, Product> = {
     durations: [
       { days: 30, price: 170 },
     ],
-    perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "10 Home Slots", "10 Auction Slots"],
+    perks: ["/Kit", "/pv", "10 Home Slots", "10 Auction Slots"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Shulker Box", "Potion x4", "Diamond Helmet (Bolt Armor Trim, Protection VIII, Fire Protection VIII, Respiration VIII, Unbreaking VIII, Mending VIII)", "Diamond Chestplate (Bolt Armor Trim, Redstone Material, Protection VIII, Fire Protection VIII, Respiration VIII, Unbreaking VIII, Mending VIII)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
     qrLink: "",
   },
@@ -184,7 +184,7 @@ const products: Record<string, Product> = {
     durations: [
       { days: 30, price: 220 },
     ],
-    perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "15 Home Slots", "15 Auction Slots"],
+    perks: ["/Kit", "/pv", "15 Home Slots", "15 Auction Slots"],
     kitItems: ["Diamond Sword", "Diamond Pickaxe", "Diamond Axe", "Diamond Shovel", "Diamond Hoe", "Potion", "Shulker Box", "Bed", "Ladder", "Diamond Helmet (Silence Armor Trim, Amethyst Material, Protection IX, Fire Protection IX, Unbreaking IX, Mending IX)", "Diamond Chestplate (Silence Armor Trim, Amethyst Material, Protection IX, Fire Protection IX, Unbreaking IX, Mending IX)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
     qrLink: "",
   },
@@ -198,7 +198,7 @@ const products: Record<string, Product> = {
     durations: [
       { days: 30, price: 280 },
     ],
-    perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "Unlimited Home Slots", "Unlimited Auction Slots", "VIP Priority"],
+    perks: ["/Kit", "/pv", "Unlimited Home Slots", "Unlimited Auction Slots", "VIP Priority"],
     kitItems: ["Diamond Pickaxe", "Diamond Shovel", "Diamond Axe", "Diamond Hoe", "Fire Resistance Potion", "Milk Bucket", "Bed", "Red Wool", "Diamond Helmet (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Chestplate (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
     qrLink: "",
   },
@@ -213,7 +213,7 @@ const products: Record<string, Product> = {
     durations: [
       { days: 30, price: 340 },
     ],
-    perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "Unlimited Home Slots", "Unlimited Auction Slots", "VIP Priority", "2000 Claim Blocks", "Custom Rank Name"],
+    perks: ["/Kit", "/pv", "Unlimited Home Slots", "Unlimited Auction Slots", "VIP Priority", "2000 Claim Blocks", "Custom Rank Name"],
     kitItems: ["Diamond Pickaxe", "Diamond Shovel", "Diamond Axe", "Diamond Hoe", "Fire Resistance Potion", "Milk Bucket", "Bed", "Red Wool", "Diamond Helmet (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Chestplate (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
     qrLink: "",
   },
@@ -381,7 +381,7 @@ const products: Record<string, Product> = {
     description: "The ultimate One Block rank! Full Netherite kit, free team names, /fly & all commands.",
     price: 80,
     tier: "ob-spicy",
-    perks: ["2 Free Team Name Changes", "/Fly Access", "All Commands Unlocked"],
+    perks: ["2 Free Team Name Changes", "All Commands Unlocked"],
     kitItems: ["Netherite Sword", "Netherite Pickaxe", "Netherite Axe", "Netherite Shovel", "Netherite Boots", "Netherite Leggings", "Netherite Chestplate", "Netherite Helmet", "Shield", "Lava Bucket", "Water Bucket", "Golden Apple x64", "Totem of Undying x3", "Spawner", "Mace", "Trident", "Wind Charge", "Shulker Box"],
     qrLink: "",
   },

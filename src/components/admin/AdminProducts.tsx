@@ -18,11 +18,58 @@ interface Product {
   is_active: boolean;
   sort_order: number;
   command_template: string;
+  metadata: Record<string, any>;
 }
 
 interface AdminProductsProps {
   adminCall: (action: string, data?: any) => Promise<any>;
 }
+
+const PerksEditor = ({ perks, onChange }: { perks: string[]; onChange: (perks: string[]) => void }) => {
+  const [newPerk, setNewPerk] = useState("");
+
+  const addPerk = () => {
+    const trimmed = newPerk.trim();
+    if (!trimmed) return;
+    if (!perks.includes(trimmed)) {
+      onChange([...perks, trimmed]);
+    }
+    setNewPerk("");
+  };
+
+  const removePerk = (index: number) => {
+    onChange(perks.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div>
+      <label className="text-xs text-muted-foreground mb-1 block">Perks / Bonuses</label>
+      <div className="flex flex-wrap gap-1.5 mb-2">
+        {perks.map((perk, i) => (
+          <span key={i} className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/20 text-primary text-xs font-display">
+            {perk}
+            <button onClick={() => removePerk(i)} className="hover:text-destructive">
+              <X className="w-3 h-3" />
+            </button>
+          </span>
+        ))}
+        {perks.length === 0 && <span className="text-xs text-muted-foreground/50">No perks added</span>}
+      </div>
+      <div className="flex gap-2">
+        <Input
+          placeholder="Add perk e.g. /pv"
+          value={newPerk}
+          onChange={(e) => setNewPerk(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addPerk())}
+          className="bg-card border-border/50 text-xs h-8"
+        />
+        <Button type="button" size="sm" variant="outline" onClick={addPerk} className="h-8 px-3">
+          <Plus className="w-3 h-3" />
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const AdminProducts = ({ adminCall }: AdminProductsProps) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -40,6 +87,7 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
     price: 0,
     original_price: 0,
     sort_order: 0,
+    metadata: { perks: [] as string[] },
   });
 
   const loadProducts = useCallback(async () => {
@@ -57,7 +105,7 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
 
   const startEdit = (product: Product) => {
     setEditingId(product.id);
-    setEditForm({ ...product });
+    setEditForm({ ...product, metadata: product.metadata || { perks: [] } });
   };
 
   const cancelEdit = () => {
@@ -78,6 +126,7 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
         server: editForm.server,
         sort_order: editForm.sort_order,
         command_template: editForm.command_template,
+        metadata: editForm.metadata,
       });
       toast.success("Product updated!");
       cancelEdit();
@@ -116,7 +165,7 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
     try {
       await adminCall("create_product", newProduct);
       toast.success("Product created!");
-      setNewProduct({ product_key: "", category: "rank", server: "gem", name: "", description: "", price: 0, original_price: 0, sort_order: 0 });
+      setNewProduct({ product_key: "", category: "rank", server: "gem", name: "", description: "", price: 0, original_price: 0, sort_order: 0, metadata: { perks: [] } });
       setShowAddForm(false);
       loadProducts();
     } catch (e: any) {
@@ -132,6 +181,10 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
     if (filterCategory !== "all" && p.category !== filterCategory) return false;
     return true;
   });
+
+  const getPerks = (product: Product): string[] => {
+    return (product.metadata as any)?.perks || [];
+  };
 
   return (
     <div className="space-y-6">
@@ -263,6 +316,12 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
                 className="bg-card border-border/50"
               />
             </div>
+            <div className="lg:col-span-4">
+              <PerksEditor
+                perks={newProduct.metadata.perks}
+                onChange={(perks) => setNewProduct(p => ({ ...p, metadata: { ...p.metadata, perks } }))}
+              />
+            </div>
           </div>
           <div className="flex gap-2 mt-4">
             <Button onClick={createProduct} variant="default">
@@ -350,6 +409,10 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
                   />
                   <p className="text-xs text-muted-foreground mt-1">Use {"{player}"} for player name</p>
                 </div>
+                <PerksEditor
+                  perks={(editForm.metadata as any)?.perks || []}
+                  onChange={(perks) => setEditForm(p => ({ ...p, metadata: { ...(p.metadata || {}), perks } }))}
+                />
                 <div className="flex gap-2">
                   <Button size="sm" onClick={saveEdit}>
                     <Save className="w-4 h-4 mr-1" /> Save
@@ -381,6 +444,15 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
                       <span>Key: {product.product_key}</span>
                       <span>Order: {product.sort_order}</span>
                     </div>
+                    {getPerks(product).length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        {getPerks(product).map((perk, i) => (
+                          <span key={i} className="text-[10px] px-1.5 py-0.5 rounded bg-accent/30 text-accent-foreground font-display">
+                            {perk}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
