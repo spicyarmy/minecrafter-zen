@@ -198,7 +198,7 @@ const products: Record<string, Product> = {
     durations: [
       { days: 30, price: 280 },
     ],
-    perks: ["/Kit", "/Backpack", "/Fly", "/Withdraw", "Unlimited Home Slots", "Unlimited Auction Slots", "VIP Priority"],
+    perks: ["/Kit", "/pv", "Unlimited Home Slots", "Unlimited Auction Slots", "VIP Priority"],
     kitItems: ["Diamond Pickaxe", "Diamond Shovel", "Diamond Axe", "Diamond Hoe", "Fire Resistance Potion", "Milk Bucket", "Bed", "Red Wool", "Diamond Helmet (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Chestplate (Silence Armor Trim, Emerald Material, Protection X, Fire Protection X, Unbreaking X, Mending X)", "Diamond Leggings", "Diamond Boots", "Fishing Rod"],
     qrLink: "",
   },
