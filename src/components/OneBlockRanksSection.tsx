@@ -38,7 +38,7 @@ const ranks = [
     glow: "0 0 30px hsla(20, 100%, 50%, 0.5)",
     accent: "text-orange-400",
     kitItems: ["Netherite Sword", "Netherite Pickaxe", "Netherite Axe", "Netherite Shovel", "Netherite Boots", "Netherite Leggings", "Netherite Chestplate", "Netherite Helmet", "Shield", "Lava Bucket", "Water Bucket", "Golden Apple x64", "Totem of Undying x3", "Spawner", "Mace", "Trident", "Wind Charge", "Shulker Box"],
-    bonuses: ["2 Free Team Name Changes", "/Fly Access", "All Commands Unlocked"],
+    bonuses: ["2 Free Team Name Changes", "All Commands Unlocked"],
   },
 ];
 

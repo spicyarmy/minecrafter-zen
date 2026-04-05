@@ -381,7 +381,7 @@ const products: Record<string, Product> = {
     description: "The ultimate One Block rank! Full Netherite kit, free team names, /fly & all commands.",
     price: 80,
     tier: "ob-spicy",
-    perks: ["2 Free Team Name Changes", "/Fly Access", "All Commands Unlocked"],
+    perks: ["2 Free Team Name Changes", "All Commands Unlocked"],
     kitItems: ["Netherite Sword", "Netherite Pickaxe", "Netherite Axe", "Netherite Shovel", "Netherite Boots", "Netherite Leggings", "Netherite Chestplate", "Netherite Helmet", "Shield", "Lava Bucket", "Water Bucket", "Golden Apple x64", "Totem of Undying x3", "Spawner", "Mace", "Trident", "Wind Charge", "Shulker Box"],
     qrLink: "",
   },
