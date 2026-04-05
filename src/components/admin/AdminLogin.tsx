@@ -27,14 +27,22 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
         body: { action: "verify", password: cleanPassword },
       });
 
-      if (res.error) {
-        throw new Error(res.error.message);
-      }
-
+      // Edge function returns 401 for wrong password, which sets res.error
+      // But if we get data.success, login worked
       if (res.data?.success) {
         sessionStorage.setItem("admin_pwd", cleanPassword);
         onLogin();
         toast.success("Admin access granted!");
+      } else if (res.data?.error) {
+        toast.error(res.data.error);
+      } else if (res.error) {
+        // Try to parse the error context for a message
+        let msg = "Wrong password!";
+        try {
+          const ctx = await (res.error as any)?.context?.json?.();
+          if (ctx?.error) msg = ctx.error;
+        } catch {}
+        toast.error(msg);
       } else {
         toast.error("Wrong password!");
       }
