@@ -171,7 +171,7 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
     try {
       await adminCall("create_product", newProduct);
       toast.success("Product created!");
-      setNewProduct({ product_key: "", category: "rank", server: "gem", name: "", description: "", price: 0, original_price: 0, sort_order: 0, metadata: { perks: [] } });
+      setNewProduct({ product_key: "", category: "rank", server: "gem", name: "", description: "", price: 0, original_price: 0, sort_order: 0, metadata: { perks: [], kitItems: [], rewards: [] } });
       setShowAddForm(false);
       loadProducts();
     } catch (e: any) {
