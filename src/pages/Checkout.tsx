@@ -571,12 +571,15 @@ const Checkout = () => {
   // Site discount from admin
   const [siteDiscountPercent, setSiteDiscountPercent] = useState(0);
 
+  // DB product overlay - fetches live data from admin panel
+  const [dbProduct, setDbProduct] = useState<any>(null);
+
   // Custom weapon support
   const searchParams = new URLSearchParams(window.location.search);
   const customName = searchParams.get("customName");
   const customPrice = Number(searchParams.get("customPrice")) || 0;
   
-  const product: Product | null = productId === "custom-weapon" && customName
+  const hardcodedProduct: Product | null = productId === "custom-weapon" && customName
     ? {
         type: "key" as const,
         name: customName,
@@ -587,6 +590,106 @@ const Checkout = () => {
         qrLink: "",
       }
     : productId ? products[productId] : null;
+
+  // Fetch matching DB product and overlay dynamic values
+  useEffect(() => {
+    if (!productId || productId === "custom-weapon") return;
+    
+    const fetchDbProduct = async () => {
+      // Determine the product key based on server context
+      const isLifestealKey = ["core-key", "flux-key", "aura-key"].includes(productId);
+      const isOneBlock = productId.startsWith("ob-");
+      const isToken = productId.startsWith("token-");
+      
+      let productKey = productId;
+      if (!isOneBlock && !isToken && !isLifestealKey) {
+        // For regular products, check if lifesteal version exists
+        if (selectedServer === "lifesteal") {
+          productKey = `ls-${productId}`;
+        }
+      }
+      
+      const { data } = await supabase
+        .from("products")
+        .select("*")
+        .eq("product_key", productKey)
+        .eq("is_active", true)
+        .maybeSingle();
+      
+      // Fallback: try without prefix
+      if (!data && selectedServer === "lifesteal") {
+        const { data: fallback } = await supabase
+          .from("products")
+          .select("*")
+          .eq("product_key", productId)
+          .eq("is_active", true)
+          .maybeSingle();
+        setDbProduct(fallback);
+      } else {
+        setDbProduct(data);
+      }
+    };
+    
+    fetchDbProduct();
+  }, [productId, selectedServer]);
+
+  // Build the final product by merging hardcoded + DB overrides
+  const product: Product | null = (() => {
+    if (!hardcodedProduct) return null;
+    if (!dbProduct) return hardcodedProduct;
+    
+    const merged = { ...hardcodedProduct };
+    
+    // Override name & description from DB
+    if (dbProduct.name) merged.name = dbProduct.name;
+    if (dbProduct.description) merged.description = dbProduct.description;
+    
+    // Override price from DB
+    if (merged.type === "rank") {
+      const rankMerged = merged as RankProduct;
+      rankMerged.durations = [{ days: 30, price: dbProduct.price }];
+    } else if (merged.type === "key") {
+      (merged as KeyProduct).price = dbProduct.price;
+    } else if (merged.type === "token") {
+      (merged as TokenProduct).price = dbProduct.price;
+    } else if (merged.type === "oneblock-rank") {
+      (merged as OneBlockRankProduct).price = dbProduct.price;
+    } else if (merged.type === "oneblock-key") {
+      (merged as OneBlockKeyProduct).price = dbProduct.price;
+    } else if (merged.type === "oneblock-extra") {
+      (merged as OneBlockExtraProduct).price = dbProduct.price;
+    }
+    
+    // Override perks from DB metadata
+    const dbPerks = dbProduct.metadata?.perks;
+    if (dbPerks && Array.isArray(dbPerks) && dbPerks.length > 0) {
+      if (merged.type === "rank") {
+        (merged as RankProduct).perks = dbPerks;
+      } else if (merged.type === "oneblock-rank") {
+        (merged as OneBlockRankProduct).perks = dbPerks;
+      }
+    }
+    
+    // Override kit items from DB metadata
+    const dbKitItems = dbProduct.metadata?.kitItems;
+    if (dbKitItems && Array.isArray(dbKitItems) && dbKitItems.length > 0) {
+      if (merged.type === "rank") {
+        (merged as RankProduct).kitItems = dbKitItems;
+      } else if (merged.type === "oneblock-rank") {
+        (merged as OneBlockRankProduct).kitItems = dbKitItems;
+      }
+    }
+    
+    // Override rewards from DB metadata
+    const dbRewards = dbProduct.metadata?.rewards;
+    if (dbRewards && Array.isArray(dbRewards) && dbRewards.length > 0) {
+      if (merged.type === "key") {
+        (merged as KeyProduct).rewards = dbRewards;
+      }
+    }
+    
+    return merged;
+  })();
   
   const isCustomRank = product?.type === "rank" && (product as RankProduct).isCustomRank;
   const isCurrency = product?.type === "currency";

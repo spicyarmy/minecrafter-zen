@@ -35,22 +35,25 @@ const Admin = () => {
       throw new Error("Please login again");
     }
 
-    const res = await supabase.functions.invoke("admin-auth", {
-      body: { action, password: storedPassword, ...data },
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-auth`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ action, password: storedPassword, ...data }),
+      }
+    );
 
-    // Handle both success and error responses
-    if (res.data?.error) throw new Error(res.data.error);
-    if (res.error && !res.data) {
-      // Try to get error message from the response
-      let msg = res.error.message;
-      try {
-        const ctx = await (res.error as any)?.context?.json?.();
-        if (ctx?.error) msg = ctx.error;
-      } catch {}
-      throw new Error(msg);
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Request failed");
     }
-    return res.data;
+
+    return result;
   }, []);
 
   const loadSettings = useCallback(async () => {
@@ -78,12 +81,21 @@ const Admin = () => {
       }
 
       try {
-        const res = await supabase.functions.invoke("admin-auth", {
-          body: { action: "verify", password: storedPassword },
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-auth`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            },
+            body: JSON.stringify({ action: "verify", password: storedPassword }),
+          }
+        );
 
-        // If data.success exists, the password is valid
-        if (res.data?.success) {
+        const data = await response.json();
+
+        if (response.ok && data.success) {
           setIsAuthenticated(true);
         } else {
           sessionStorage.removeItem("admin_pwd");
