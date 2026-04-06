@@ -25,45 +25,51 @@ interface AdminProductsProps {
   adminCall: (action: string, data?: any) => Promise<any>;
 }
 
-const PerksEditor = ({ perks, onChange }: { perks: string[]; onChange: (perks: string[]) => void }) => {
-  const [newPerk, setNewPerk] = useState("");
+const TagEditor = ({ items, onChange, label, placeholder, colorClass = "bg-primary/20 text-primary" }: { 
+  items: string[]; 
+  onChange: (items: string[]) => void; 
+  label: string;
+  placeholder: string;
+  colorClass?: string;
+}) => {
+  const [newItem, setNewItem] = useState("");
 
-  const addPerk = () => {
-    const trimmed = newPerk.trim();
+  const addItem = () => {
+    const trimmed = newItem.trim();
     if (!trimmed) return;
-    if (!perks.includes(trimmed)) {
-      onChange([...perks, trimmed]);
+    if (!items.includes(trimmed)) {
+      onChange([...items, trimmed]);
     }
-    setNewPerk("");
+    setNewItem("");
   };
 
-  const removePerk = (index: number) => {
-    onChange(perks.filter((_, i) => i !== index));
+  const removeItem = (index: number) => {
+    onChange(items.filter((_, i) => i !== index));
   };
 
   return (
     <div>
-      <label className="text-xs text-muted-foreground mb-1 block">Perks / Bonuses</label>
+      <label className="text-xs text-muted-foreground mb-1 block">{label}</label>
       <div className="flex flex-wrap gap-1.5 mb-2">
-        {perks.map((perk, i) => (
-          <span key={i} className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/20 text-primary text-xs font-display">
-            {perk}
-            <button onClick={() => removePerk(i)} className="hover:text-destructive">
+        {items.map((item, i) => (
+          <span key={i} className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg ${colorClass} text-xs font-display`}>
+            {item}
+            <button onClick={() => removeItem(i)} className="hover:text-destructive">
               <X className="w-3 h-3" />
             </button>
           </span>
         ))}
-        {perks.length === 0 && <span className="text-xs text-muted-foreground/50">No perks added</span>}
+        {items.length === 0 && <span className="text-xs text-muted-foreground/50">None added</span>}
       </div>
       <div className="flex gap-2">
         <Input
-          placeholder="Add perk e.g. /pv"
-          value={newPerk}
-          onChange={(e) => setNewPerk(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addPerk())}
+          placeholder={placeholder}
+          value={newItem}
+          onChange={(e) => setNewItem(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addItem())}
           className="bg-card border-border/50 text-xs h-8"
         />
-        <Button type="button" size="sm" variant="outline" onClick={addPerk} className="h-8 px-3">
+        <Button type="button" size="sm" variant="outline" onClick={addItem} className="h-8 px-3">
           <Plus className="w-3 h-3" />
         </Button>
       </div>
