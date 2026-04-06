@@ -93,7 +93,7 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
     price: 0,
     original_price: 0,
     sort_order: 0,
-    metadata: { perks: [] as string[] },
+    metadata: { perks: [] as string[], kitItems: [] as string[], rewards: [] as string[] },
   });
 
   const loadProducts = useCallback(async () => {
