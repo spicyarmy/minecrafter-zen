@@ -323,9 +323,29 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
               />
             </div>
             <div className="lg:col-span-4">
-              <PerksEditor
-                perks={newProduct.metadata.perks}
+              <TagEditor
+                items={newProduct.metadata.perks}
                 onChange={(perks) => setNewProduct(p => ({ ...p, metadata: { ...p.metadata, perks } }))}
+                label="Perks / Bonuses"
+                placeholder="Add perk e.g. /pv"
+              />
+            </div>
+            <div className="lg:col-span-4">
+              <TagEditor
+                items={newProduct.metadata.kitItems || []}
+                onChange={(kitItems) => setNewProduct(p => ({ ...p, metadata: { ...p.metadata, kitItems } }))}
+                label="Kit Items"
+                placeholder="Add kit item e.g. Diamond Sword"
+                colorClass="bg-secondary/20 text-secondary"
+              />
+            </div>
+            <div className="lg:col-span-4">
+              <TagEditor
+                items={newProduct.metadata.rewards || []}
+                onChange={(rewards) => setNewProduct(p => ({ ...p, metadata: { ...p.metadata, rewards } }))}
+                label="Key Rewards (for keys)"
+                placeholder="Add reward e.g. Netherite Sword"
+                colorClass="bg-accent/20 text-accent-foreground"
               />
             </div>
           </div>
