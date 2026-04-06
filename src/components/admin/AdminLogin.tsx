@@ -23,28 +23,26 @@ const AdminLogin = ({ onLogin }: AdminLoginProps) => {
 
     setIsLoading(true);
     try {
-      const res = await supabase.functions.invoke("admin-auth", {
-        body: { action: "verify", password: cleanPassword },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-auth`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          },
+          body: JSON.stringify({ action: "verify", password: cleanPassword }),
+        }
+      );
 
-      // Edge function returns 401 for wrong password, which sets res.error
-      // But if we get data.success, login worked
-      if (res.data?.success) {
+      const data = await response.json();
+
+      if (response.ok && data.success) {
         sessionStorage.setItem("admin_pwd", cleanPassword);
         onLogin();
         toast.success("Admin access granted!");
-      } else if (res.data?.error) {
-        toast.error(res.data.error);
-      } else if (res.error) {
-        // Try to parse the error context for a message
-        let msg = "Wrong password!";
-        try {
-          const ctx = await (res.error as any)?.context?.json?.();
-          if (ctx?.error) msg = ctx.error;
-        } catch {}
-        toast.error(msg);
       } else {
-        toast.error("Wrong password!");
+        toast.error(data.error || "Wrong password!");
       }
     } catch (error: any) {
       toast.error(error?.message || "Authentication failed");
