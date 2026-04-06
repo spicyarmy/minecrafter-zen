@@ -81,12 +81,21 @@ const Admin = () => {
       }
 
       try {
-        const res = await supabase.functions.invoke("admin-auth", {
-          body: { action: "verify", password: storedPassword },
-        });
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/admin-auth`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            },
+            body: JSON.stringify({ action: "verify", password: storedPassword }),
+          }
+        );
 
-        // If data.success exists, the password is valid
-        if (res.data?.success) {
+        const data = await response.json();
+
+        if (response.ok && data.success) {
           setIsAuthenticated(true);
         } else {
           sessionStorage.removeItem("admin_pwd");
