@@ -435,9 +435,25 @@ const AdminProducts = ({ adminCall }: AdminProductsProps) => {
                   />
                   <p className="text-xs text-muted-foreground mt-1">Use {"{player}"} for player name</p>
                 </div>
-                <PerksEditor
-                  perks={(editForm.metadata as any)?.perks || []}
+                <TagEditor
+                  items={(editForm.metadata as any)?.perks || []}
                   onChange={(perks) => setEditForm(p => ({ ...p, metadata: { ...(p.metadata || {}), perks } }))}
+                  label="Perks / Bonuses"
+                  placeholder="Add perk e.g. /pv"
+                />
+                <TagEditor
+                  items={(editForm.metadata as any)?.kitItems || []}
+                  onChange={(kitItems) => setEditForm(p => ({ ...p, metadata: { ...(p.metadata || {}), kitItems } }))}
+                  label="Kit Items"
+                  placeholder="Add kit item e.g. Diamond Sword"
+                  colorClass="bg-secondary/20 text-secondary"
+                />
+                <TagEditor
+                  items={(editForm.metadata as any)?.rewards || []}
+                  onChange={(rewards) => setEditForm(p => ({ ...p, metadata: { ...(p.metadata || {}), rewards } }))}
+                  label="Key Rewards (for keys)"
+                  placeholder="Add reward e.g. Netherite Sword"
+                  colorClass="bg-accent/20 text-accent-foreground"
                 />
                 <div className="flex gap-2">
                   <Button size="sm" onClick={saveEdit}>
